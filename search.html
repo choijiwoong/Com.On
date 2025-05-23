@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Com.On - 검색</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #ffffff, #f3e8ff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #7c3aed;
+    }
+    .search-box {
+      display: flex;
+      max-width: 600px;
+      width: 90%;
+      background: #fff;
+      border-radius: 999px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-top: 24px;
+    }
+    .search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      padding: 8px;
+    }
+    .search-box button {
+      background: #7c3aed;
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Com.On ✨</h1>
+  <p>당신의 조건에 딱 맞는 제품을 대화로 검색해보세요</p>
+
+  <div class="search-box">
+    <input type="text" id="userQuery" placeholder="검색어를 입력하세요..." />
+    <button onclick="goToResult()">검색</button>
+  </div>
+
+  <script>
+    // 예시 클릭 시 검색창에 자동 입력
+    document.getElementById("example").addEventListener("click", function () {
+      document.getElementById("userQuery").value = this.textContent;
+    });
+
+    function goToResult() {
+      const query = document.getElementById("userQuery").value;
+      if (query.trim()) {
+        window.location.href = `result.html?query=${encodeURIComponent(query)}`;
+      }
+    }
+  </script>
+</body>
+<!-- 예시 질문 박스 -->
+<div class="examples">
+  <p class="examples-title">💬 예시로 이런 질문은 어때요?</p>
+  <div class="example-list">
+    <button onclick="fillExample(this)">내가 학교에서 사용할 노트북을 살건데 게임같은거 말고 사무용으로 쓸거고 무게는 통학이 1시간 반 걸려서 조금 가벼웠으면 좋겠어</button>
+    <button onclick="fillExample(this)">영상 편집용으로 쓸 노트북인데 성능 좋은 게 필요해</button>
+    <button onclick="fillExample(this)">디자인 전공이라 색감 좋은 화면이 필요해</button>
+  </div>
+</div>
+
+<style>
+  .examples {
+    max-width: 640px;
+    margin-top: 24px;
+    text-align: left;
+    padding: 0 16px;
+  }
+
+  .examples-title {
+    font-weight: 600;
+    color: #4b2991;
+    margin-bottom: 8px;
+  }
+
+  .example-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .example-list button {
+    background-color: #f3e8ff;
+    border: 1px solid #d8b4fe;
+    color: #5b21b6;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .example-list button:hover {
+    background-color: #ede9fe;
+    transform: translateY(-1px);
+  }
+</style>
+
+<script>
+  function fillExample(el) {
+    document.getElementById("userQuery").value = el.textContent;
+  }
+</script>
+
+</html>
