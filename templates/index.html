@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MZHQSKG5');</script>
+<!-- End Google Tag Manager -->
   <title>Com.On - 검색</title>
   <style>
     body {
@@ -55,6 +62,17 @@
     <button onclick="goToResult()">검색</button>
   </div>
 
+  <!-- 예시 질문 박스 -->
+  <div class="examples">
+  <p class="examples-title">💬 예시로 이런 질문은 어때요?</p>
+  <div class="example-list">
+    <button onclick="fillExample(this)">내가 학교에서 사용할 노트북을 살건데 게>임같은거 말고 사무용으로 쓸거고 무게는 통학이 1시간 반 걸려서 조금 가벼웠으면 좋
+겠어</button>
+    <button onclick="fillExample(this)">영상 편집용으로 쓸 노트북인데 성능 좋은 게 필요해</button>
+    <button onclick="fillExample(this)">디자인 전공이라 색감 좋은 화면이 필요해</button>
+  </div>
+</div>
+
   <script>
     // 예시 클릭 시 검색창에 자동 입력
     document.getElementById("example").addEventListener("click", function () {
@@ -69,15 +87,11 @@
     }
   </script>
 </body>
-<!-- 예시 질문 박스 -->
-<div class="examples">
-  <p class="examples-title">💬 예시로 이런 질문은 어때요?</p>
-  <div class="example-list">
-    <button onclick="fillExample(this)">내가 학교에서 사용할 노트북을 살건데 게임같은거 말고 사무용으로 쓸거고 무게는 통학이 1시간 반 걸려서 조금 가벼웠으면 좋겠어</button>
-    <button onclick="fillExample(this)">영상 편집용으로 쓸 노트북인데 성능 좋은 게 필요해</button>
-    <button onclick="fillExample(this)">디자인 전공이라 색감 좋은 화면이 필요해</button>
-  </div>
-</div>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MZHQSKG5"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <style>
   .examples {
