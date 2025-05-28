@@ -168,6 +168,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     const query = document.getElementById("userQuery").value;
     if (query.trim()) {
       window.location.href = `result.html?query=${encodeURIComponent(query)}`;
+    } else {
+      alert("🛠️ 기능 구현 중입니다.\n아래 질문카드를 눌러 테스트해보세요!");
     }
   }
   
