@@ -13,117 +13,126 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 
   <title>Com.On - 추천 보고서</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f5ff;
-      color: #333;
-      padding: 40px 20px;
-      max-width: 760px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-	
-	/* 상단 바 */
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #ffffff;
-      padding: 10px 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    padding: 40px 20px;
+    max-width: 760px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
 
-    h1 {
-      color: #7c3aed;
-      font-size: 2rem;
-      margin-bottom: 24px;
-    }
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    padding: 10px 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
 
-    .product {
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 28px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
+  h1 {
+    color: #000000;
+    font-size: 2rem;
+    margin-bottom: 24px;
+  }
 
-    .product-header {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+  #queryText {
+    background: #fff0eb;
+    padding: 12px 16px;
+    border-left: 4px solid #f35a4a;
+    border-radius: 6px;
+    margin: 20px 0;
+    font-style: italic;
+  }
 
-    .product-header img {
-      width: 140px;
-      height: auto;
-      border-radius: 6px;
-      background: #f4f4f4;
-    }
+  .product {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
 
-    .review-box {
-      background: #f3e8ff;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      margin-top: 6px;
-    }
+  .product-header {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
 
-    .stars {
-      color: #f59e0b;
-      font-size: 1rem;
-    }
+  .product-header img {
+    width: 140px;
+    height: auto;
+    border-radius: 6px;
+    background: #f4f4f4;
+  }
 
-    .score {
-      font-weight: bold;
-      margin-left: 8px;
-      color: #4b2991;
-    }
+  .review-box {
+    background: #fff0eb;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-top: 6px;
+  }
 
-    .quote {
-      font-style: italic;
-      margin-top: 4px;
-      color: #555;
-    }
+  .stars {
+    color: #f59e0b;
+    font-size: 1rem;
+  }
 
-    .features {
-      margin-top: 16px;
-    }
+  .score {
+    font-weight: bold;
+    margin-left: 8px;
+    color: #f35a4a;
+  }
 
-    .section-title {
-      margin-top: 16px;
-      font-weight: bold;
-      color: #5b21b6;
-    }
+  .quote {
+    font-style: italic;
+    margin-top: 4px;
+    color: #555;
+  }
 
-    .buy-button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 18px;
-      background-color: #7c3aed;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-      transition: background 0.2s ease;
-    }
+  .features {
+    margin-top: 16px;
+  }
 
-    .buy-button:hover {
-      background-color: #5b21b6;
-    }
-  </style>
+  .section-title {
+    margin-top: 16px;
+    font-weight: bold;
+    color: #f35a4a;
+  }
+
+  .buy-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 18px;
+    background-color: #f35a4a;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background 0.2s ease;
+  }
+
+  .buy-button:hover {
+    background-color: #d9483b;
+  }
+</style>
+
 </head>
 <body>
   <!-- ✅ 상단바 -->
   <div class="navbar">
     <a href="/" class="navbar-logo">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRijdYSVoHQVBLgyz7YEFpD4cBPJG1bjxmCoA&s" width=50 height=30 alt="팀 로고"> <!-- 로고 파일명을 맞게 수정하세요 -->
+      <img src="https://velog.velcdn.com/images/gogogi313/post/de631a3a-9004-4965-815c-24525d5cdac0/image.png" width=220 height=70 alt="팀 로고"> <!-- 로고 파일명을 맞게 수정하세요 -->
     </a>
-    <h1>Com.On 맞춤형 노트북 추천 보고서</h1>
+    <h1>맞춤형 노트북 추천 보고서</h1>
   </div>
 
-  <p id="queryText" style="background:#ede9fe; padding:12px 16px; border-left:4px solid #a78bfa; border-radius:6px; margin: 20px 0; font-style: italic;">
+  <p id="queryText" style="background:#fff0eb; padding:12px 16px; border-left:4px solid #f35a4a; border-radius:6px; margin: 20px 0; font-style: italic;">
   사용자의 조건을 불러오는 중...
   </p>
 
