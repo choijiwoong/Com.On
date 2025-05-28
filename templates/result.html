@@ -3,263 +3,176 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-MZHQSKG5');</script>
-<!-- End Google Tag Manager -->
-
   <title>Com.On - 추천 보고서</title>
-<style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #ffffff;
-    color: #000000;
-    padding: 40px 20px;
-    max-width: 760px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-
-  .navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #ffffff;
-    padding: 10px 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  }
-
-  h1 {
-    color: #000000;
-    font-size: 2rem;
-    margin-bottom: 24px;
-  }
-
-  #queryText {
-    background: #fff0eb;
-    padding: 12px 16px;
-    border-left: 4px solid #f35a4a;
-    border-radius: 6px;
-    margin: 20px 0;
-    font-style: italic;
-  }
-
-  .product {
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 28px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-
-  .product-header {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .product-header img {
-    width: 140px;
-    height: auto;
-    border-radius: 6px;
-    background: #f4f4f4;
-  }
-
-  .review-box {
-    background: #fff0eb;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    margin-top: 6px;
-  }
-
-  .stars {
-    color: #f59e0b;
-    font-size: 1rem;
-  }
-
-  .score {
-    font-weight: bold;
-    margin-left: 8px;
-    color: #f35a4a;
-  }
-
-  .quote {
-    font-style: italic;
-    margin-top: 4px;
-    color: #555;
-  }
-
-  .features {
-    margin-top: 16px;
-  }
-
-  .section-title {
-    margin-top: 16px;
-    font-weight: bold;
-    color: #f35a4a;
-  }
-
-  .buy-button {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 18px;
-    background-color: #f35a4a;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: bold;
-    transition: background 0.2s ease;
-  }
-
-  .buy-button:hover {
-    background-color: #d9483b;
-  }
-</style>
-
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+      color: #000000;
+      padding: 40px 20px;
+      max-width: 760px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #ffffff;
+      padding: 10px 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    h1 {
+      color: #000000;
+      font-size: 2rem;
+      margin-bottom: 24px;
+    }
+    #queryText {
+      background: #fff0eb;
+      padding: 12px 16px;
+      border-left: 4px solid #f35a4a;
+      border-radius: 6px;
+      margin: 20px 0 10px;
+      font-style: italic;
+    }
+    #queryExplanation {
+      color: #555;
+      font-size: 0.95rem;
+      margin-bottom: 30px;
+    }
+    .product {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .product-header {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+    }
+    .product-header img {
+      width: 180px;
+      height: auto;
+      border-radius: 6px;
+      background: #f4f4f4;
+      flex-shrink: 0;
+    }
+    .product-info {
+      flex: 1;
+    }
+    .review-box {
+      background: #fff0eb;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-top: 6px;
+    }
+    .stars {
+      color: #f59e0b;
+      font-size: 1rem;
+    }
+    .score {
+      font-weight: bold;
+      margin-left: 8px;
+      color: #f35a4a;
+    }
+    .quote {
+      font-style: italic;
+      margin-top: 4px;
+      color: #555;
+    }
+    .highlight {
+      margin-top: 16px;
+      font-size: 0.95rem;
+      color: #333;
+    }
+    .buy-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 18px;
+      background-color: #f35a4a;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.2s ease;
+    }
+    .buy-button:hover {
+      background-color: #d9483b;
+    }
+  </style>
 </head>
 <body>
-  <!-- ✅ 상단바 -->
   <div class="navbar">
     <a href="/" class="navbar-logo">
-      <img src="https://velog.velcdn.com/images/gogogi313/post/de631a3a-9004-4965-815c-24525d5cdac0/image.png" width=220 height=70 alt="팀 로고"> <!-- 로고 파일명을 맞게 수정하세요 -->
+      <img src="https://velog.velcdn.com/images/gogogi313/post/de631a3a-9004-4965-815c-24525d5cdac0/image.png" width="220" height="70" alt="팀 로고">
     </a>
     <h1>맞춤형 노트북 추천 보고서</h1>
   </div>
+  <p id="queryText">사용자의 조건을 불러오는 중...</p>
+  <p id="queryExplanation"></p>
+  <div id="product-container"></div>
 
-  <p id="queryText" style="background:#fff0eb; padding:12px 16px; border-left:4px solid #f35a4a; border-radius:6px; margin: 20px 0; font-style: italic;">
-  사용자의 조건을 불러오는 중...
-  </p>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get("query");
 
+    document.addEventListener("DOMContentLoaded", async () => {
+      const queryBox = document.getElementById("queryText");
+      const explanationBox = document.getElementById("queryExplanation");
+      const container = document.getElementById("product-container");
 
-  <p>✨ <strong>이런 기준으로 골랐어요!</strong></p>
-  <p>
-	  <strong>하루 통학만 왕복 3시간이 걸리는 바쁜 일정</strong> 속에서도, 
-	  수업과 과제를 <strong>효율적으로 처리하고</strong>, 
-	  가방 속에서도 <strong>가볍게 들고 다닐 수 있는 노트북</strong>이 필요하시잖아요. <br>
-	  게임보다 <strong>문서 작업, 화상 수업, 웹서핑</strong>이 주된 사용 목적이고, 
-	  <strong>무게와 배터리</strong>를 특히 중요하게 생각하시는 걸 감안해서,
-	  <strong>학생 사무용에 딱 맞는 3가지 노트북</strong>을 추천드렸어요 💼🎒
-  </p>
+      if (query) {
+        queryBox.innerText = `💬 “${query}” 조건에 맞는 추천 리스트입니다.`;
 
+        try {
+          const res = await fetch(`/api/products?query=${encodeURIComponent(query)}`);
+          const data = await res.json();
+          const explanation = data.explanation;
+          const products = data.products;
 
-  <!-- LG 그램 14 -->
-  <div class="product">
-    <div class="product-header">
-      <img src="https://thumbnail6.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/981212082531331-cd22547e-4b5c-4bae-a10e-f5bbc99c8f65.png" alt="LG 그램 14">
-      <div>
-        <h2>💻 LG 그램 14 (2023)</h2>
-		<p><strong>가격:</strong> ₩1,390,000</p>
-        <p><strong>무게:</strong> 약 999g</p>
-        <p><strong>배터리:</strong> 최대 15.5시간</p>
-        <div class="review-box">
-          <span class="stars">⭐⭐⭐⭐☆</span>
-          <span class="score">4.5 / 5</span>
-          <p class="quote">“진짜 가볍고 오래가요. 통학용으로 최고!”</p>
-        </div>
-      </div>
-    </div>
-    <div class="features">
-      <p class="section-title">장점</p>
-      <ul>
-        <li>가벼운 무게로 휴대성이 뛰어남</li>
-        <li>긴 배터리 수명으로 장시간 사용 가능</li>
-        <li>깔끔한 디자인과 편안한 키보드</li>
-      </ul>
-      <p class="section-title">단점</p>
-      <ul>
-        <li>내구성은 다른 모델에 비해 다소 약할 수 있음</li>
-      </ul>
-    </div>
-    <a class="buy-button" href="https://www.coupang.com/vp/products/6662026640?itemId=15294714959&vendorItemId=82515116791" target="_blank">🔗 쿠팡에서 자세히 보기</a>
-  </div>
+          explanationBox.innerText = explanation || "";
 
-  <!-- 삼성 갤럭시 북2 프로 -->
-  <div class="product">
-    <div class="product-header">
-      <img src="https://thumbnail8.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/091a/9e2be1388837870184339029de7c407eddffd68cdba860162b9bd30c7531.jpg" alt="갤럭시북2프로">
-      <div>
-        <h2>💻 삼성 갤럭시 북2 프로 13.3</h2>
-		<p><strong>가격:</strong> ₩1,290,000</p>
-        <p><strong>무게:</strong> 약 870g</p>
-        <p><strong>배터리:</strong> 최대 21시간</p>
-        <div class="review-box">
-          <span class="stars">⭐⭐⭐⭐⭐</span>
-          <span class="score">4.8 / 5</span>
-          <p class="quote">“가볍고 화면이 너무 선명해서 만족스러워요.”</p>
-        </div>
-      </div>
-    </div>
-    <div class="features">
-      <p class="section-title">장점</p>
-      <ul>
-        <li>가장 가벼운 무게로 휴대성이 최고</li>
-        <li>긴 배터리 수명으로 하루 종일 사용 가능</li>
-        <li>AMOLED 디스플레이로 선명한 화면</li>
-      </ul>
-      <p class="section-title">단점</p>
-      <ul>
-        <li>얇은 디자인으로 인해 발열 관리가 어려울 수 있음</li>
-        <li>키보드 키감이 다소 얕을 수 있음</li>
-      </ul>
-    </div>
-    <a class="buy-button" href="https://www.coupang.com/vp/products/8466427893?itemId=24496524284&vendorItemId=90114115162" target="_blank">🔗 쿠팡에서 자세히 보기</a>
-  </div>
+          if (!products || products.length === 0) {
+            container.innerHTML = "<p>😢 해당 조건에 맞는 상품이 아직 없어요.</p>";
+            return;
+          }
 
-  <!-- 레노버 X1 카본 -->
-  <div class="product">
-    <div class="product-header">
-      <img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/0e1c/f7b0cf6db5798856483fe9c5b965825ff55a0d7656616c8d40694b6b8678.jpg" alt="X1 카본">
-      <div>
-        <h2>💻 레노버 씽크패드 X1 카본 Gen 10</h2>
-		<p><strong>가격:</strong> ₩1,580,000</p>
-        <p><strong>무게:</strong> 약 1.12kg</p>
-        <p><strong>배터리:</strong> 실사용 약 6~7시간</p>
-        <div class="review-box">
-          <span class="stars">⭐⭐⭐⭐☆</span>
-          <span class="score">4.3 / 5</span>
-          <p class="quote">“키감 미쳤어요. 타건감 중요하면 무조건 이거.”</p>
-        </div>
-      </div>
-    </div>
-    <div class="features">
-      <p class="section-title">장점</p>
-      <ul>
-        <li>튼튼한 내구성과 우수한 키보드 키감</li>
-        <li>다양한 포트 제공으로 확장성 우수</li>
-      </ul>
-      <p class="section-title">단점</p>
-      <ul>
-        <li>다른 모델에 비해 무게가 다소 무거움</li>
-        <li>배터리 수명이 짧아 자주 충전이 필요</li>
-      </ul>
-    </div>
-    <a class="buy-button" href="https://www.coupang.com/vp/products/6458262639?itemId=20176278777&vendorItemId=87268386180" target="_blank">🔗 쿠팡에서 자세히 보기</a>
-  </div>
+          products.forEach(p => {
+            const html = `
+              <div class="product">
+                <div class="product-header">
+                  <img src="${p.image}" alt="${p.name}">
+                  <div class="product-info">
+                    <h2>💻 ${p.name}</h2>
+                    <p><strong>가격:</strong> ${p.price}</p>
+                    <p><strong>무게:</strong> ${p.weight}</p>
+                    <p><strong>배터리:</strong> ${p.battery}</p>
+                    <div class="review-box">
+                      <span class="stars">⭐⭐⭐⭐☆</span>
+                      <span class="score">${p.score} / 5</span>
+                      <p class="quote">“${p.review}”</p>
+                    </div>
+                  </div>
+                </div>
+                <p class="highlight">${p.highlight}</p>
+                <a class="buy-button" href="${p.link}" target="_blank">🔗 상세페이지에서 자세히 보기</a>
+              </div>
+            `;
+            container.innerHTML += html;
+          });
+
+        } catch (error) {
+          console.error("❌ 상품 불러오기 실패:", error);
+          queryBox.innerText = "추천 상품을 불러오는 데 문제가 발생했어요.";
+        }
+      } else {
+        queryBox.innerText = "💬 조건을 인식하지 못했어요. 기본 추천 리스트를 보여드릴게요.";
+      }
+    });
+  </script>
 </body>
-
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MZHQSKG5"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const query = params.get("query");
-
-  if (query) {
-    document.getElementById("queryText").innerText = 
-      `💬 “${query}”이라는 조건으로 제품을 찾고 계시다면 아래 제품들을 비교해보세요.`;
-  } else {
-    document.getElementById("queryText").innerText = 
-      `💬 조건을 인식하지 못했어요. 기본 추천 리스트를 보여드릴게요.`;
-  }
-</script>
-
-
 </html>
+

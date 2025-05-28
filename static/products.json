@@ -1,0 +1,117 @@
+{
+  "요즘 맥북이 자꾸 눈에 밟히는데, 개발자한테 진짜 괜찮은 선택인지 모르겠어. 무게는 좀 있어도 되니까 성능이랑 키보드 타건감, 배터리 오래가는 거 위주로 봐줘.": {
+    "explanation": "맥북을 고민하고 있다면, 지금이 바로 그 선택의 순간입니다. 성능, 타건감, 배터리까지, 개발자에게 중요한 요소를 모두 만족시키는 프리미엄 라인업만 골라봤어요. 단순한 기계가 아닌, 일과 창작의 즐거움을 함께 주는 동반자 같은 노트북들이에요. 개발자라면 한 번쯤은 반드시 고민하게 되는 바로 그 제품들이죠.",
+    "products": [
+      {
+        "name": "맥북 프로 M2 14인치",
+        "price": "₩2,490,000",
+        "weight": "1.6kg",
+        "battery": "최대 17시간",
+        "score": 4.9,
+        "review": "성능 괴물이에요. 개발자에게는 최고의 워크스테이션!",
+        "image": "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mbp14-spaceblack-select-202410?wid=904&hei=840&fmt=jpeg&qlt=90&.v=YnlWZDdpMFo0bUpJZnBpZjhKM2M3VGhTSEZFNjlmT2xUUDNBTjljV1BxWVk4UDMvOWNCVUEyZk1VN2FtQlpZWXZvdUZlR0V0VUdJSjBWaDVNVG95Yk15Y0c3T3Y4UWZwZExHUFdTUC9lN28",
+        "link": "https://www.apple.com/kr/shop/buy-mac/macbook-pro",
+        "highlight": "성능, 키보드 감성, 배터리까지 모두 잡은 개발자용 워크스테이션. 긴 작업도 안정감 있게 해주는 macOS의 매끄러운 UX는 집중력을 높여줍니다. 클라이언트 시연이나 발표에도 완벽하게 어울리는 깔끔한 외관도 매력적이에요."
+      },
+      {
+        "name": "델 XPS 15",
+        "price": "₩2,190,000",
+        "weight": "1.8kg",
+        "battery": "최대 15시간",
+        "score": 4.7,
+        "review": "고성능 + 고해상도 디스플레이. 전반적으로 밸런스 좋음.",
+        "image": "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/xps-notebooks/xps-15-9530/media-gallery/touch-black/notebook-xps-15-9530-t-black-gallery-1.psd?fmt=png-alpha&pscan=auto&scl=1&hei=320&wid=520&qlt=100,1&resMode=sharp2&size=520,320&chrss=full",
+        "link": "https://www.dell.com/ko-kr/shop/dell-%EB%85%B8%ED%8A%B8%EB%B6%81/xps-15-%EB%85%B8%ED%8A%B8%EB%B6%81/spd/xps-15-9530-laptop",
+        "highlight": "성능과 휴대성의 절묘한 균형. 베젤 없는 대화면이 주는 몰입감은 코드 작성에도 시각적 만족감을 줍니다. 키감도 부드러워 장시간 타이핑에 적합하고, 무거운 IDE도 거뜬히 돌려요."
+      },
+      {
+        "name": "레노버 리전 5 프로",
+        "price": "₩1,761,663",
+        "weight": "2.3kg",
+        "battery": "최대 8시간",
+        "score": 4.6,
+        "review": "무거워도 괜찮다면, 타건감과 쿨링이 정말 뛰어남.",
+        "image": "https://p3-ofp.static.pub//fes/cms/2024/09/12/m1jnssoporjtlmma8zqy3ssoour2yj992790.png",
+        "link": "https://www.lenovo.com/kr/ko/p/laptops/legion-laptops/legion-5-series/lenovo-legion-5i-gen-9-16-inch-intel/len101g0035",
+        "highlight": "가격 대비 성능비 최강의 게이밍 + 개발 머신. 시원한 쿨링, 넉넉한 키보드 공간, 뛰어난 그래픽 성능으로 하드코어한 작업도 문제없어요."
+      }
+    ]
+  },
+  "회사에서는 데스크탑 쓰고, 노트북은 거의 집이나 카페에서 사이드 프로젝트할 때만 써. 웹개발 위주고, 깃허브랑 노션, 리모트 회의 정도만 잘 되면 돼. 굳이 고성능까진 필요 없어.": {
+    "explanation": "조용한 공간에서 깃허브 커밋하고, 노션으로 정리하고, 줌 회의도 무리 없이 소화하는 깔끔한 노트북을 모았어요. 고성능은 필요 없지만, 성능 저하 없이 쾌적한 사용 경험은 충분히 누릴 수 있어요. 사이드 프로젝트를 사랑하는 당신에게 딱 맞는 '적당히 좋은' 노트북이에요. 무겁지 않고 감성도 챙긴 선택들만 골랐습니다.",
+    "products": [
+      {
+        "name": "LG 그램 16 (2024)",
+        "price": "₩1,790,000",
+        "weight": "1.2kg",
+        "battery": "19.5시간",
+        "score": 4.6,
+        "review": "화면 커서 작업하기 좋고, 가볍고 배터리 오래감.",
+        "image": "https://www.lge.co.kr/kr/images/notebook/md10262827/gallery/16Z90SP_w_mo.jpg",
+        "link": "https://www.lge.co.kr/notebook/16z90sp-kaowk",
+        "highlight": "노션, 슬랙, 깃허브. 당신이 자주 쓰는 앱에 딱 맞춘 가벼운 친구. 장시간 무선으로도 끄떡없는 배터리는 이동성에 최적화되어 있어요."
+      },
+      {
+        "name": "ASUS 비보북 15",
+        "price": "₩799,000",
+        "weight": "1.7kg",
+        "battery": "12시간",
+        "score": 4.3,
+        "review": "기본 사무 작업용으로 가성비 좋고 조용해요.",
+        "image": "https://dlcdnwebimgs.asus.com/gain/d81deb62-5ccf-4d65-919f-c964e818058c/w800",
+        "link": "https://www.asus.com/kr/laptops/for-home/vivobook/vivobook-15-x1502/",
+        "highlight": "예산을 아끼고 싶다면 이게 답. 웹서핑, 영상 시청, 기본 개발작업도 조용하게 처리할 수 있어요."
+      },
+      {
+        "name": "MS 서피스 프로 11 스냅드래곤 X 플러스",
+        "price": "₩1,338,890",
+        "weight": "1.1kg",
+        "battery": "13.5시간",
+        "score": 4.5,
+        "review": "노션/웹서핑/문서용으로 가볍고 깔끔해요.",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7dWcPmV7zWhtgJSeiI6MqIyYttV7rnCykPQ&s",
+        "link": "https://www.microsoft.com/ko-kr/surface/devices/surface-laptop-7th-edition",
+        "highlight": "얇고 가벼운 디자인 덕분에 가방에 쏙 들어가는 느낌. 애플스러운 미니멀 감성에 반할지도 몰라요."
+      }
+    ]
+  },
+  "출퇴근이 구로에서 강남인데 지옥철 타니까 노트북 무게가 진짜 체감돼. 진짜 가벼운 모델 중에 가격 너무 안 비싸고 개발자가 써도 괜찮은 거 없을까?": {
+    "explanation": "지옥철에 치이고 땀에 젖을 때, 무게 1kg의 노트북이 당신의 어깨를 지켜줍니다. 최대한 가볍지만 성능은 절대 타협하지 않은 모델만 모았어요. 출퇴근을 견디게 해줄 단 하나의 가벼운 무기. 이 리스트는 당신의 출근 스트레스를 조금이라도 줄이기 위해 준비했어요.",
+    "products": [
+      {
+        "name": "갤럭시 북3 Go 5G (35.6cm) Snapdragon 7c+ Gen 3",
+        "price": "₩557,000",
+        "weight": "1.43kg",
+        "battery": "20시간",
+        "score": 4.2,
+        "review": "가벼움 하나는 최고. 문서용으로 좋아요.",
+        "image": "https://images.samsung.com/kdp/goods/2023/11/30/dab7471a-7671-4fb5-b82e-effa1cb2ac6e.png?$PD_GALLERY_L_PNG$",
+        "link": "https://www.samsung.com/sec/galaxybook/galaxy-book3-go-nt345xpa-kc04s/NT345XPA-KC04S/",
+        "highlight": "가격도 가볍고 무게도 가볍다! 이동 많은 당신에게 딱 맞는 출근용 노트북. 화면 밝기도 무난해서 야외에서도 OK."
+      },
+      {
+        "name": "HP 파빌리온 에어로 13",
+        "price": "₩1,299,000",
+        "weight": "990g",
+        "battery": "15시간",
+        "score": 4.4,
+        "review": "1kg도 안 되는데 성능도 무난함. 출퇴근족에게 딱.",
+        "image": "https://kr-media.apjonlinecdn.com/catalog/product/cache/b3b166914d87ce343d4dc5ec5117b502/a/2/a2nv7pa-bn1_1.png",
+        "link": "https://www.hp.com/kr-ko/shop/laptops-tablets/personal-laptops/pavilion-laptops/pavilion-aero-laptops.html",
+        "highlight": "가방에 넣었는지도 모를 무게. 회사에서 가볍게 사용할 노트북으로 가성비 훌륭해요. 디자인도 세련돼서 꺼내기도 좋아요."
+      },
+      {
+        "name": "LG 그램 14 (2023)",
+        "price": "₩1,850,000",
+        "weight": "999g",
+        "battery": "15.5시간",
+        "score": 4.5,
+        "review": "진짜 가볍고 오래가요. 통학용으로 최고!",
+        "image": "https://www.lge.co.kr/kr/images/notebook/md08917827/gallery/medium01.jpg",
+        "link": "https://www.lge.co.kr/notebook/14z90p-ga30k",
+        "highlight": "대한민국 대표 초경량 노트북. 들고 다닐 일이 많다면, 그램만한 선택이 없어요. 배터리도 오래가고 키보드 감각도 좋습니다."
+      }
+    ]
+  }
+}
+
