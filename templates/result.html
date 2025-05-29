@@ -109,7 +109,7 @@
     <a href="/" class="navbar-logo">
       <img src="https://velog.velcdn.com/images/gogogi313/post/de631a3a-9004-4965-815c-24525d5cdac0/image.png" width="220" height="70" alt="팀 로고">
     </a>
-    <h1>맞춤형 노트북 추천 보고서</h1>
+    <h1>맞춤형 추천 보고서</h1>
   </div>
   <p id="queryText">사용자의 조건을 불러오는 중...</p>
   <p id="queryExplanation"></p>
@@ -118,6 +118,48 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const query = params.get("query");
+
+    const fetchFallbackFromN8N = async (questionText) => {
+      const container = document.getElementById("product-container");
+      container.innerHTML = "🌀 맞춤형 추천을 불러오는 중...";
+
+      try {
+        const response = await fetch('https://n8n.1000.school/webhook/c932befe-195e-46b0-8502-39c9b1c69cc2', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: questionText || "기본 추천 리스트 보여줘" })
+        });
+
+        if (!response.ok) throw new Error("네트워크 오류 발생");
+
+        const data = await response.text();
+        container.innerHTML = `<p id="queryExplanation"> 안내 메시지: 현재 구현 중인 기능입니다.간단한 포맷을 참고해주시고 피드백해주시면 감사드리겠습니다.</p>`;
+        container.innerHTML += data;
+      } catch (error) {
+        container.innerHTML = `<p>❌ 기본 추천을 불러오지 못했어요: ${error.message}</p>`;
+      }
+    };
+
+    const renderProduct = (p) => `
+      <div class="product">
+        <div class="product-header">
+          <img src="${p.image}" alt="${p.name}">
+          <div class="product-info">
+            <h2>💻 ${p.name}</h2>
+            <p><strong>가격:</strong> ${p.price}</p>
+            <p><strong>무게:</strong> ${p.weight}</p>
+            <p><strong>배터리:</strong> ${p.battery}</p>
+            <div class="review-box">
+              <span class="stars">⭐⭐⭐⭐☆</span>
+              <span class="score">${p.score} / 5</span>
+              <p class="quote">“${p.review}”</p>
+            </div>
+          </div>
+        </div>
+        <p class="highlight">${p.highlight}</p>
+        <a class="buy-button" href="${p.link}" target="_blank">🔗 상세페이지에서 자세히 보기</a>
+      </div>
+    `;
 
     document.addEventListener("DOMContentLoaded", async () => {
       const queryBox = document.getElementById("queryText");
@@ -130,51 +172,31 @@
         try {
           const res = await fetch(`/api/products?query=${encodeURIComponent(query)}`);
           const data = await res.json();
-          const explanation = data.explanation;
-          const products = data.products;
 
-          explanationBox.innerText = explanation || "";
+          explanationBox.innerText = data.explanation || "";
 
-          if (!products || products.length === 0) {
-            container.innerHTML = "<p>😢 해당 조건에 맞는 상품이 아직 없어요.</p>";
+          if (!data.products || data.products.length === 0) {
+            await fetchFallbackFromN8N(query);
             return;
           }
 
-          products.forEach(p => {
-            const html = `
-              <div class="product">
-                <div class="product-header">
-                  <img src="${p.image}" alt="${p.name}">
-                  <div class="product-info">
-                    <h2>💻 ${p.name}</h2>
-                    <p><strong>가격:</strong> ${p.price}</p>
-                    <p><strong>무게:</strong> ${p.weight}</p>
-                    <p><strong>배터리:</strong> ${p.battery}</p>
-                    <div class="review-box">
-                      <span class="stars">⭐⭐⭐⭐☆</span>
-                      <span class="score">${p.score} / 5</span>
-                      <p class="quote">“${p.review}”</p>
-                    </div>
-                  </div>
-                </div>
-                <p class="highlight">${p.highlight}</p>
-                <a class="buy-button" href="${p.link}" target="_blank">🔗 상세페이지에서 자세히 보기</a>
-              </div>
-            `;
-            container.innerHTML += html;
+          data.products.forEach(p => {
+            container.insertAdjacentHTML("beforeend", renderProduct(p));
           });
 
         } catch (error) {
-          console.error("❌ 상품 불러오기 실패:", error);
           queryBox.innerText = "추천 상품을 불러오는 데 문제가 발생했어요.";
+          await fetchFallbackFromN8N(query);
         }
       } else {
         queryBox.innerText = "💬 조건을 인식하지 못했어요. 기본 추천 리스트를 보여드릴게요.";
+        await fetchFallbackFromN8N("기본 추천 리스트 보여줘");
       }
     });
   </script>
+
   <footer style="margin-top: 60px; padding: 20px 0; text-align: center; font-size: 0.9rem; color: #888;">
-  ⓒ 2025 팀 GRIT | 가천대학교 창업대학 코코네스쿨
+    ⓒ 2025 팀 GRIT | 가천대학교 창업대학 코코네스쿨
   </footer>
 </body>
 </html>
