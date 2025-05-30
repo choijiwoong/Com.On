@@ -15,10 +15,16 @@
 
   <p>당신의 조건에 딱 맞는 제품을 대화로 검색해보세요</p>
 
-  <div class="search-box">
-    <input type="text" id="userQuery" placeholder="검색어를 입력하세요..." />
-    <button onclick="goToResult()">검색</button>
-  </div>
+
+  <form class="search-box" onsubmit="goToResult(); return false;">
+    <input
+      type="text"
+      id="userQuery"
+      placeholder="검색어를 입력하세요..."
+    />
+    <button type="submit">검색</button>
+  </form>
+
 
   <!-- 예시 질문 박스 -->
   <div class="examples">
