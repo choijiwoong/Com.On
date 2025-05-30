@@ -1,1 +1,4 @@
 flask
+google
+requests
+beautifulsoup4

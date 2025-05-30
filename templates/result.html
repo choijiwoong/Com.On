@@ -133,7 +133,7 @@
         if (!response.ok) throw new Error("네트워크 오류 발생");
 
         const data = await response.text();
-        container.innerHTML = `<p id="queryExplanation"> 안내 메시지: 현재 구현 중인 기능입니다.간단한 포맷을 참고해주시고 피드백해주시면 감사드리겠습니다.</p>`;
+        container.innerHTML = `<p id="queryExplanation"> (안내 메시지: 현재 구현 중인 기능입니다.간단한 포맷을 참고해주시고 피드백해주시면 감사드리겠습니다.)</p>`;
         container.innerHTML += data;
       } catch (error) {
         container.innerHTML = `<p>❌ 기본 추천을 불러오지 못했어요: ${error.message}</p>`;
