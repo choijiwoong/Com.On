@@ -9,6 +9,11 @@
   --light-bg: #fff0eb;
 }
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #ffffff;
