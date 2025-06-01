@@ -73,78 +73,10 @@ const fetchFallbackFromN8N = async (questionText) => {
 		}
 	  }
 	}
-	enableTouchSlider(slider);//***********
   } catch (error) {
     container.innerHTML = `<p>❌ 기본 추천을 불러오지 못했어요: ${error.message}</p>`;
   }
 };
-
-// 슬라이더 터치 제스처 감지
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".image-slider").forEach((slider) => {
-    let startX = 0;
-
-    slider.addEventListener("touchstart", (e) => {
-      startX = e.touches[0].clientX;
-    });
-
-    slider.addEventListener("touchend", (e) => {
-      const endX = e.changedTouches[0].clientX;
-      const deltaX = endX - startX;
-
-      if (Math.abs(deltaX) > 40) {
-        const direction = deltaX > 0 ? "prev" : "next";
-        const btn = slider.querySelector(`.slider-btn.${direction}`);
-        if (btn) btn.click();
-      }
-    });
-  });
-});
-
-// 슬라이드 터치 기능 추가
-function enableTouchSlider(slider) {
-  const slides = slider.querySelectorAll(".slide");
-  if (slides.length <= 1) return;
-
-  let startX = 0;
-  let endX = 0;
-
-  slider.addEventListener("touchstart", (e) => {
-    startX = e.touches[0].clientX;
-  });
-
-  slider.addEventListener("touchmove", (e) => {
-    endX = e.touches[0].clientX;
-  });
-
-  slider.addEventListener("touchend", () => {
-    if (startX === 0 || endX === 0) return;
-
-    const diff = endX - startX;
-    if (Math.abs(diff) < 30) return; // 최소 스와이프 거리
-
-    const slidesArray = Array.from(slides);
-    const currentIndex = slidesArray.findIndex((s) => s.classList.contains("active"));
-
-    let nextIndex;
-    if (diff < 0) {
-      // 오른쪽 → 왼쪽 (다음 슬라이드)
-      nextIndex = (currentIndex + 1) % slides.length;
-    } else {
-      // 왼쪽 → 오른쪽 (이전 슬라이드)
-      nextIndex = (currentIndex - 1 + slides.length) % slides.length;
-    }
-
-    slides[currentIndex].classList.remove("active");
-    slides[nextIndex].classList.add("active");
-
-    // 초기화
-    startX = 0;
-    endX = 0;
-  });
-}
-
-
 
 // 추천 상품 HTML 블록을 문자열로 생성
 const renderProduct = (p) => {
@@ -194,41 +126,6 @@ document.addEventListener("click", (e) => {
 
   slides[nextIndex].classList.add("active");
 });
-// 👉 이미지 슬라이더 터치 전환 기능 (모바일)
-document.addEventListener("DOMContentLoaded", () => {
-  const sliders = document.querySelectorAll(".image-slider");
-
-  sliders.forEach(slider => {
-    let startX = 0;
-    let currentIndex = 0;
-    const slides = slider.querySelectorAll(".slide");
-
-    slider.addEventListener("touchstart", (e) => {
-      startX = e.touches[0].clientX;
-    });
-
-    slider.addEventListener("touchend", (e) => {
-      const endX = e.changedTouches[0].clientX;
-      const diff = startX - endX;
-
-      if (Math.abs(diff) > 30) {
-        slides[currentIndex].classList.remove("active");
-
-        if (diff > 0) {
-          // swipe left → next
-          currentIndex = (currentIndex + 1) % slides.length;
-        } else {
-          // swipe right → prev
-          currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-        }
-
-        slides[currentIndex].classList.add("active");
-      }
-    });
-  });
-});
-
-
 
 // 페이지 로딩 시, query값에 따라 API 요청 및 HTML 렌더링
 document.addEventListener("DOMContentLoaded", async () => {
