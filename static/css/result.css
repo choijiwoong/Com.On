@@ -1,0 +1,158 @@
+/* ===============================
+   📁 static/css/result.css
+   result.html 전용 스타일
+================================ */
+
+body {
+  padding: 40px 20px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  padding: 10px 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+#queryText {
+  background: var(--light-bg);
+  padding: 12px 16px;
+  border-left: 4px solid var(--main-color);
+  border-radius: 6px;
+  margin: 20px 0 10px;
+  font-style: italic;
+}
+
+#queryExplanation {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+}
+
+.product {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.product-header {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.product-header img {
+  width: 180px;
+  border-radius: 6px;
+  background: #f4f4f4;
+  flex-shrink: 0;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.review-box {
+  background: var(--light-bg);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+.stars {
+  color: #f59e0b;
+}
+
+.score {
+  font-weight: bold;
+  margin-left: 8px;
+  color: var(--main-color);
+}
+
+.quote {
+  font-style: italic;
+  margin-top: 4px;
+  color: #555;
+}
+
+.highlight {
+  margin-top: 16px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.buy-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 18px;
+  background-color: var(--main-color);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.buy-button:hover {
+  background-color: #d9483b;
+}
+
+.logo-img {
+  max-width: 70%;
+  height: auto;
+  display: block;
+}
+
+.navbar-title {
+  white-space: nowrap;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000;
+}
+
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .navbar img {
+    width: 160px;
+    height: auto;
+  }
+
+  .product-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .product-header img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .product-info {
+    width: 100%;
+  }
+
+  .buy-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .logo-img {
+    max-width: 160px;
+    margin-bottom: 8px;
+  }
+}

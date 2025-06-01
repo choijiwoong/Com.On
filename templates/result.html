@@ -4,157 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Com.On - 추천 보고서</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #ffffff;
-      color: #000000;
-      padding: 40px 20px;
-      max-width: 760px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #ffffff;
-      padding: 10px 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-    h1 {
-      color: #000000;
-      font-size: 2rem;
-      margin-bottom: 24px;
-    }
-    #queryText {
-      background: #fff0eb;
-      padding: 12px 16px;
-      border-left: 4px solid #f35a4a;
-      border-radius: 6px;
-      margin: 20px 0 10px;
-      font-style: italic;
-    }
-    #queryExplanation {
-      color: #555;
-      font-size: 0.95rem;
-      margin-bottom: 30px;
-    }
-    .product {
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 28px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-    .product-header {
-      display: flex;
-      flex-direction: row;
-      gap: 20px;
-    }
-    .product-header img {
-      width: 180px;
-      height: auto;
-      border-radius: 6px;
-      background: #f4f4f4;
-      flex-shrink: 0;
-    }
-    .product-info {
-      flex: 1;
-    }
-    .review-box {
-      background: #fff0eb;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      margin-top: 6px;
-    }
-    .stars {
-      color: #f59e0b;
-      font-size: 1rem;
-    }
-    .score {
-      font-weight: bold;
-      margin-left: 8px;
-      color: #f35a4a;
-    }
-    .quote {
-      font-style: italic;
-      margin-top: 4px;
-      color: #555;
-    }
-    .highlight {
-      margin-top: 16px;
-      font-size: 0.95rem;
-      color: #333;
-    }
-    .buy-button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 18px;
-      background-color: #f35a4a;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-      transition: background 0.2s ease;
-    }
-    .buy-button:hover {
-      background-color: #d9483b;
-    }
-	
-	@media (max-width: 768px) {
-	  body {
-		padding: 20px 12px;
-	  }
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
 
-	  .navbar {
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 8px;
-	  }
-
-	  .navbar img {
-		width: 160px;
-		height: auto;
-	  }
-
-	  h1 {
-		font-size: 1.5rem;
-	  }
-
-	  .product-header {
-		flex-direction: column;
-		gap: 12px;
-	  }
-
-	  .product-header img {
-		width: 100%;
-		max-width: 100%;
-		height: auto;
-	  }
-
-	  .product-info {
-		width: 100%;
-	  }
-
-	  .buy-button {
-		display: block;
-		width: 100%;
-		text-align: center;
-		box-sizing: border-box;
-		margin-top: 16px;
-	  }
-	}
-
-  </style>
 </head>
 <body>
   <div class="navbar">
     <a href="/" class="navbar-logo">
-      <img src="https://velog.velcdn.com/images/gogogi313/post/de631a3a-9004-4965-815c-24525d5cdac0/image.png" width="220" height="70" alt="팀 로고">
+      <img src="https://velog.velcdn.com/images/gogogi313/post/de631a3a-9004-4965-815c-24525d5cdac0/image.png" alt="팀 로고" class="logo-img" />
     </a>
-    <h1>맞춤형 추천 보고서</h1>
+    <span class="navbar-title">맞춤형 추천 보고서</span>
   </div>
   <p id="queryText">사용자의 조건을 불러오는 중...</p>
   <p id="queryExplanation"></p>

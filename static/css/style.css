@@ -1,0 +1,40 @@
+/* ===============================
+   📁 static/css/style.css
+   공통 스타일 (폰트, 색상, 레이아웃 등)
+================================ */
+
+:root {
+  --main-color: #f35a4a;
+  --hover-color: #e14b3d;
+  --light-bg: #fff0eb;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+  line-height: 1.6;
+  margin: 0;
+}
+
+h1 {
+  color: #000000;
+  font-size: 2rem;
+  margin-bottom: 24px;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 20px 12px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+}

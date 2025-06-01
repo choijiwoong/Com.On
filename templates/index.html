@@ -4,145 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Com.On - 검색</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
 </head>
 <body>
-  <div style="display: flex; align-items: center; gap: 12px;">
-  <a href="/">
-    <img src="https://velog.velcdn.com/images/gogogi313/post/5a189f79-fe7c-4dad-ae81-e822707deaf5/image.png" width="80" height="70" alt="팀 로고1">
-  </a>
-  <h1 style="margin: 0;">Com.On ✨</h1>
+  <div class="container">
+    <div class="logo-title">
+      <a href="/">
+        <img src="https://velog.velcdn.com/images/gogogi313/post/5a189f79-fe7c-4dad-ae81-e822707deaf5/image.png" width="80" height="70" alt="팀 로고1">
+      </a>
+      <h1>Com.On ✨</h1>
+    </div>
+
+    <p class="description">당신의 조건에 딱 맞는 제품을 대화로 검색해보세요</p>
+
+    <form class="search-box" onsubmit="goToResult(); return false;">
+      <input type="text" id="userQuery" placeholder="검색어를 입력하세요..." />
+      <button type="submit">검색</button>
+    </form>
+
+    <div class="examples">
+      <p class="examples-title">💬 예시로 이런 질문은 어때요?</p>
+      <div class="example-list" id="example-list"></div>
+    </div>
   </div>
 
-  <p>당신의 조건에 딱 맞는 제품을 대화로 검색해보세요</p>
-
-
-  <form class="search-box" onsubmit="goToResult(); return false;">
-    <input
-      type="text"
-      id="userQuery"
-      placeholder="검색어를 입력하세요..."
-    />
-    <button type="submit">검색</button>
-  </form>
-
-
-  <!-- 예시 질문 박스 -->
-  <div class="examples">
-  <p class="examples-title">💬 예시로 이런 질문은 어때요?</p>
-  <div class="example-list" id="example-list">
-    <!-- 질문 카드가 여기에 동적으로 들어감 -->
-  </div>
-</div>
-
-<footer style="margin-top: 60px; padding: 20px 0; text-align: center; font-size: 0.9rem; color: #888;">
-  ⓒ 2025 팀 GRIT | 가천대학교 창업대학 코코네스쿨
-</footer>
-
+  <footer style="margin-top: 60px; padding: 20px 0; text-align: center; font-size: 0.9rem; color: #888;">
+    ⓒ 2025 팀 GRIT | 가천대학교 창업대학 코코네스쿨
+  </footer>
 </body>
 
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MZHQSKG5"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-
-<style>
-  body {
-    margin: 0;
-    padding: 40px 0 0 0;  /* ← 상단 40px 여백 */
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #ffffff; /* 완전 흰 배경 */
-    color: #000000; /* 일반 검정 텍스트 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;  /* 중앙 정렬 대신 위에서부터 시작 */
-    height: 100vh;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 12px;
-    color: #000000;
-  }
-
-  .search-box {
-    display: flex;
-    max-width: 600px;
-    width: 90%;
-    background: #ffffff;
-    border: 2px solid #f35a4a; /* 포인트 테두리 */
-    border-radius: 999px;
-    padding: 12px 16px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08); /* 입체감 */
-    margin-top: 24px;
-    transition: box-shadow 0.2s ease;
-  }
-
-  .search-box:focus-within {
-    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-  }
-
-  .search-box input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 1rem;
-    padding: 8px;
-    background: transparent;
-    color: #000;
-  }
-
-  .search-box button {
-    background: #f35a4a;
-    color: #fff;
-    border: none;
-    border-radius: 999px;
-    padding: 8px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-
-  .search-box button:hover {
-    background: #e14b3d;
-  }
-
-  .examples {
-    max-width: 640px;
-    margin-top: 24px;
-    text-align: left;
-    padding: 0 16px;
-  }
-
-  .examples-title {
-    font-weight: 600;
-    color: #f35a4a;
-    margin-bottom: 8px;
-  }
-
-  .example-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .example-list button {
-    background-color: #f3e8ff;
-    border: 1px solid #d8b4fe;
-    color: #000000;
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    text-align: left;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .example-list button:hover {
-    background-color: #ede9fe;
-    transform: translateY(-1px);
-  }
-</style>
 
   <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
