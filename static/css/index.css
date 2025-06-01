@@ -11,6 +11,7 @@
   max-width: 760px;
   margin: 0 auto;
   padding: 40px 20px;
+  box-sizing: border-box;
 }
 
 .logo-title {
@@ -53,6 +54,7 @@
   box-shadow: 0 4px 8px rgba(0,0,0,0.08);
   margin-top: 24px;
   transition: box-shadow 0.2s ease;
+  box-sizing: border-box;
 }
 
 .search-box:focus-within {
