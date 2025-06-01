@@ -4,27 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Com.On - 검색</title>
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-
+  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </head>
+
 <body>
   <div class="container">
-	<div class="logo-title">
-	  <a href="/">
-		<img
-		  src="https://velog.velcdn.com/images/gogogi313/post/5a189f79-fe7c-4dad-ae81-e822707deaf5/image.png"
-		  alt="팀 로고1"
-		  class="logo-img"
-		/>
-	  </a>
-	  <h1 class="logo-text">Com.On ✨</h1>
-	</div>
+    <div class="logo-title">
+      <a href="/">
+        <img
+          src="https://velog.velcdn.com/images/gogogi313/post/5a189f79-fe7c-4dad-ae81-e822707deaf5/image.png"
+          alt="팀 로고1"
+          class="logo-img"
+        />
+      </a>
+      <h1 class="logo-text">Com.On ✨</h1>
+    </div>
 
-    <p class="description">당신의 조건에 딱 맞는 제품을 대화로 검색해보세요</p>
+    <p class="description">
+      당신의 조건에 딱 맞는 제품을 대화로 검색해보세요
+    </p>
 
     <form class="search-box" onsubmit="goToResult(); return false;">
-      <input type="text" id="userQuery" placeholder="검색어를 입력하세요..." />
+      <input
+        type="text"
+        id="userQuery"
+        placeholder="검색어를 입력하세요..."
+      />
       <button type="submit">검색</button>
     </form>
 
@@ -37,55 +45,15 @@
   <footer style="margin-top: 60px; padding: 20px 0; text-align: center; font-size: 0.9rem; color: #888;">
     ⓒ 2025 팀 GRIT | 가천대학교 창업대학 코코네스쿨
   </footer>
+
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe
+      src="https://www.googletagmanager.com/ns.html?id=GTM-MZHQSKG5"
+      height="0"
+      width="0"
+      style="display:none;visibility:hidden"
+    ></iframe>
+  </noscript>
 </body>
-
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MZHQSKG5"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-
-  <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-MZHQSKG5');</script>
-<!-- End Google Tag Manager -->
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    fetch('/api/questions')
-      .then(res => res.json())
-      .then(questions => {
-        const list = document.getElementById("example-list");
-        if (!list) return;
-
-        questions.forEach(q => {
-          const btn = document.createElement("button");
-          btn.textContent = q.text;
-          btn.onclick = () => {
-            document.getElementById("userQuery").value = q.text;
-          };
-          list.appendChild(btn);
-        });
-      })
-      .catch(err => {
-        console.error("❌ 질문 로딩 실패:", err);
-      });
-  });
-
-  function goToResult() {
-    const query = document.getElementById("userQuery").value;
-    if (query.trim()) {
-      window.location.href = `result.html?query=${encodeURIComponent(query)}`;
-    } else {
-      alert("🛠️ 기능 구현 중입니다.\n아래 질문카드를 눌러 테스트해보세요!");
-    }
-  }
-  
-  function fillExample(el) {
-    document.getElementById("userQuery").value = el.textContent;
-  }
-</script>
-
 </html>
