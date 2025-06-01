@@ -34,7 +34,7 @@
       <h2>💻 ${p.name}</h2>
       <p><strong>가격:</strong> ${p.price}</p>
       <p><strong>무게:</strong> ${p.weight}</p>
-      <p><strong>배터리:</strong> ${p.battery}</p>
+      <p><strong>주요 기능:</strong> ${p.feature}</p>
       <div class="review-box">
         <span class="stars">⭐⭐⭐⭐☆</span>
         <span class="score">${p.score} / 5</span>
@@ -50,7 +50,7 @@
 
 [${p.highlight} 작성 지침]
 
-- 사용자 조건에 딱 맞게, 해당 제품의 장점이 어떻게 부합하는지 2~3문장으로 설명
+- 사용자 조건에 딱 맞게, 해당 제품의 장점이 어떻게 부합하는지 3~4문장으로 설명
 - 너무 일반적인 표현 금지 ("좋다", "괜찮다" 등)
 - 조건 중심 + 감성적이면서 신중한 어조
 
