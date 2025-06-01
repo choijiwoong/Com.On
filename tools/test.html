@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Com.On - 고급 로딩 테스트</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 48px 16px;
+      background-color: #fff6f1;
+      text-align: center;
+      color: #2e2e2e;
+    }
+
+    .loading-visual {
+      animation: fadeIn 0.5s ease-in-out;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 24px;
+      border-radius: 16px;
+      background-color: #fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    .doc-count {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #e25e3e;
+      margin-bottom: 20px;
+    }
+
+    .doc-icons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .doc-icon {
+      font-size: 2rem;
+      opacity: 0.85;
+      animation: floatSpin 2s infinite ease-in-out;
+      transform-origin: center;
+    }
+
+    .doc-icon:nth-child(1) { animation-delay: 0s; }
+    .doc-icon:nth-child(2) { animation-delay: 0.2s; }
+    .doc-icon:nth-child(3) { animation-delay: 0.4s; }
+    .doc-icon:nth-child(4) { animation-delay: 0.6s; }
+    .doc-icon:nth-child(5) { animation-delay: 0.8s; }
+    .doc-icon:nth-child(6) { animation-delay: 1s; }
+    .doc-icon:nth-child(7) { animation-delay: 1.2s; }
+
+    @keyframes floatSpin {
+      0%   { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
+      50%  { transform: translateY(-10px) rotate(5deg); opacity: 1; }
+      100% { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    button {
+      margin-top: 40px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #e25e3e;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c94e32;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 고급 문서 분석 로딩</h1>
+
+  <div id="product-container"></div>
+
+  <button onclick="testStart()">시작해보기</button>
+
+  <script>
+    function startFancyLoading() {
+      const container = document.getElementById("product-container");
+      container.innerHTML = `
+        <div id="loading-visual" class="loading-visual">
+          <div class="doc-count">
+            📄 <span id="doc-count">0</span>개의 문서를 탐색 중입니다...
+          </div>
+          <div class="doc-icons">
+            <span class="doc-icon">📄</span>
+            <span class="doc-icon">🗂️</span>
+            <span class="doc-icon">📁</span>
+            <span class="doc-icon">📃</span>
+            <span class="doc-icon">📄</span>
+            <span class="doc-icon">📄</span>
+            <span class="doc-icon">📄</span>
+          </div>
+        </div>
+      `;
+
+      let count = 0;
+      const countSpan = document.getElementById("doc-count");
+      const docText = document.querySelector(".doc-count");
+
+      const interval = setInterval(() => {
+        const increment = Math.floor(Math.random() * 4) + 2;
+        count += increment;
+
+        if (count >= 92) {
+          clearInterval(interval);
+          countSpan.textContent = "약 92";
+          docText.innerHTML = `📄 약 92개의 문서를 탐색했습니다.<br>잠시만 기다려주세요...`;
+        } else {
+          countSpan.textContent = count;
+        }
+      }, 350);
+    }
+
+    function testStart() {
+      startFancyLoading();
+    }
+  </script>
+</body>
+</html>

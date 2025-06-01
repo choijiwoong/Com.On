@@ -35,8 +35,7 @@ function validateImage(url) {
 // 추천 HTML을 서버에서 가져오고, 이미지 자동 교체
 const fetchFallbackFromN8N = async (questionText) => {
   const container = document.getElementById("product-container");
-  container.innerHTML = "🌀 맞춤형 추천을 불러오는 중...";
-
+  startFancyLoading();
   try {
     const response = await fetch('https://n8n.1000.school/webhook/c932befe-195e-46b0-8502-39c9b1c69cc2', {
       method: 'POST',
@@ -122,3 +121,43 @@ document.addEventListener("DOMContentLoaded", async () => {
     await fetchFallbackFromN8N("기본 추천 리스트 보여줘");
   }
 });
+
+
+function startFancyLoading() {
+  const container = document.getElementById("product-container");
+  container.innerHTML = `
+    <div id="loading-visual" class="loading-visual">
+      <div class="doc-count">
+        📄 <span id="doc-count">0</span>개의 문서를 탐색 중입니다...
+      </div>
+      <div class="doc-icons">
+        <span class="doc-icon">📄</span>
+        <span class="doc-icon">🗂️</span>
+        <span class="doc-icon">📁</span>
+        <span class="doc-icon">📃</span>
+        <span class="doc-icon">📄</span>
+        <span class="doc-icon">📄</span>
+        <span class="doc-icon">📄</span>
+      </div>
+    </div>
+  `;
+
+  let count = 0;
+  const countSpan = document.getElementById("doc-count");
+  const docText = document.querySelector(".doc-count");
+
+  const interval = setInterval(() => {
+    const increment = Math.floor(Math.random() * 4) + 2;
+    count += increment;
+
+    if (count >= 92) {
+      clearInterval(interval);
+      countSpan.textContent = "약 92";
+      docText.innerHTML = `📄 약 92개의 문서를 탐색했습니다.<br>잠시만 기다려주세요...`;
+    } else {
+      countSpan.textContent = count;
+    }
+  }, 350);
+
+  return () => clearInterval(interval);
+}
