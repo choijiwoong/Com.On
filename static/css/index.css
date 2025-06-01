@@ -16,13 +16,24 @@
 .logo-title {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   margin-bottom: 12px;
 }
 
-.logo-title h1 {
-  margin: 0;
+.logo-img {
+  display: block;
+  height: auto;
+  width: auto;
+  max-height: 70px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.logo-text {
   font-size: 2rem;
+  margin: 0;
+  white-space: nowrap;
 }
 
 .description {
@@ -114,15 +125,17 @@
     padding: 24px 12px;
   }
 
-  .logo-title {
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+  .logo-img {
+    max-height: 60px;
+    max-width: 80px;
   }
 
-  .logo-title h1 {
-    font-size: 1.8rem;
-    text-align: center;
+  .logo-text {
+    font-size: 1.4rem;
+  }
+
+  .logo-title {
+    gap: 8px;
   }
 
   .description {
