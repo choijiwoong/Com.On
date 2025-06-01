@@ -46,3 +46,37 @@ function goToResult() {
 function fillExample(el) {
   document.getElementById("userQuery").value = el.textContent;
 }
+
+// 👉 이미지 슬라이더 터치 전환 기능 (모바일)
+document.addEventListener("DOMContentLoaded", () => {
+  const sliders = document.querySelectorAll(".image-slider");
+
+  sliders.forEach(slider => {
+    let startX = 0;
+    let currentIndex = 0;
+    const slides = slider.querySelectorAll(".slide");
+
+    slider.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].clientX;
+    });
+
+    slider.addEventListener("touchend", (e) => {
+      const endX = e.changedTouches[0].clientX;
+      const diff = startX - endX;
+
+      if (Math.abs(diff) > 30) {
+        slides[currentIndex].classList.remove("active");
+
+        if (diff > 0) {
+          // swipe left → next
+          currentIndex = (currentIndex + 1) % slides.length;
+        } else {
+          // swipe right → prev
+          currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        }
+
+        slides[currentIndex].classList.add("active");
+      }
+    });
+  });
+});
