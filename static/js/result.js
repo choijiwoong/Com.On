@@ -2,25 +2,28 @@
 const params = new URLSearchParams(window.location.search);
 const query = params.get("query");
 
-// 네이버 이미지 API에서 유효한 썸네일 URL 가져오기
-async function getValidImageURL(query) {
+async function getValidImageURLs(query, max = 5) {
+  const validImages = [];
   try {
     const res = await fetch("https://n8n.1000.school/webhook/naver-image", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: query })
+      body: JSON.stringify({ query })
     });
     const items = await res.json();
-
     for (const item of items) {
       const isValid = await validateImage(item.thumbnail);
-      if (isValid) return item.thumbnail;
+      if (isValid) {
+        validImages.push(item.thumbnail);
+        if (validImages.length >= max) break;
+      }
     }
   } catch (err) {
-    console.error("이미지 검색 오류:", err);
+    console.error("이미지 오류:", err);
   }
-  return null;
+  return validImages;
 }
+
 
 // 이미지 URL이 실제로 표시 가능한지 검사
 function validateImage(url) {
@@ -35,6 +38,7 @@ function validateImage(url) {
 // 추천 HTML을 서버에서 가져오고, 이미지 자동 교체
 const fetchFallbackFromN8N = async (questionText) => {
   const container = document.getElementById("product-container");
+  container.innerHTML = `<p class="loading-animated">🌀 맞춤형 추천을 불러오는 중</p>`;
   startFancyLoading();
   try {
     const response = await fetch('https://n8n.1000.school/webhook/c932befe-195e-46b0-8502-39c9b1c69cc2', {
@@ -51,41 +55,80 @@ const fetchFallbackFromN8N = async (questionText) => {
     // 썸네일 이미지 자동 교체
     const products = container.querySelectorAll(".product");
     for (const product of products) {
-      const title = product.querySelector("h2")?.textContent.replace("💻", "").trim();
-      const img = product.querySelector("img");
-      if (title && img) {
-        const newImageUrl = await getValidImageURL(title);
-        if (newImageUrl) {
-          img.src = newImageUrl;
-        }
-      }
-    }
+	  const title = product.querySelector("h2")?.textContent.replace("💻", "").trim();
+	  const slider = product.querySelector(".image-slider");
+
+	  if (title && slider) {
+		const images = await getValidImageURLs(title);
+		if (images.length > 0) {
+		  slider.innerHTML = `
+			${images.map((img, i) => `
+			  <img src="${img}" class="slide ${i === 0 ? 'active' : ''}" alt="${title} 이미지 ${i + 1}">
+			`).join('')}
+			${images.length > 1 ? `
+			  <button class="slider-btn prev">&#10094;</button>
+			  <button class="slider-btn next">&#10095;</button>
+			` : ''}
+		  `;
+		}
+	  }
+	}
+
   } catch (error) {
     container.innerHTML = `<p>❌ 기본 추천을 불러오지 못했어요: ${error.message}</p>`;
   }
 };
 
 // 추천 상품 HTML 블록을 문자열로 생성
-const renderProduct = (p) => `
-  <div class="product">
-    <div class="product-header">
-      <img src="${p.image}" alt="${p.name}">
-      <div class="product-info">
-        <h2>💻 ${p.name}</h2>
-        <p><strong>가격:</strong> ${p.price}</p>
-        <p><strong>무게:</strong> ${p.weight}</p>
-        <p><strong>주요 기능:</strong> ${p.feature}</p>
-        <div class="review-box">
-          <span class="stars">⭐⭐⭐⭐☆</span>
-          <span class="score">${p.score} / 5</span>
-          <p class="quote">“${p.review}”</p>
+const renderProduct = (p) => {
+  const images = p.images || [p.image];
+  return `
+    <div class="product">
+      <div class="product-header">
+        <div class="image-slider">
+          ${images.map((img, i) => `
+            <img src="${img}" class="slide ${i === 0 ? 'active' : ''}" alt="${p.name} 이미지 ${i+1}">
+          `).join('')}
+          ${images.length > 1 ? `
+            <button class="slider-btn prev">&#10094;</button>
+            <button class="slider-btn next">&#10095;</button>
+          ` : ''}
+        </div>
+        <div class="product-info">
+          <h2>💻 ${p.name}</h2>
+          <p><strong>가격:</strong> ${p.price}</p>
+          <p><strong>무게:</strong> ${p.weight}</p>
+          <p><strong>주요 기능:</strong> ${p.feature}</p>
+          <div class="review-box">
+            <span class="stars">⭐⭐⭐⭐☆</span>
+            <span class="score">${p.score} / 5</span>
+            <p class="quote">“${p.review}”</p>
+          </div>
         </div>
       </div>
+      <p class="highlight">${p.highlight}</p>
+      <a class="buy-button" href="${p.link}" target="_blank">🔗 상세페이지에서 자세히 보기</a>
     </div>
-    <p class="highlight">${p.highlight}</p>
-    <a class="buy-button" href="${p.link}" target="_blank">🔗 상세페이지에서 자세히 보기</a>
-  </div>
-`;
+  `;
+};
+
+document.addEventListener("click", (e) => {
+  if (!e.target.classList.contains("slider-btn")) return;
+
+  const slider = e.target.closest(".image-slider");
+  const slides = slider.querySelectorAll(".slide");
+  const currentIndex = Array.from(slides).findIndex((s) => s.classList.contains("active"));
+
+  slides[currentIndex].classList.remove("active");
+
+  let nextIndex = e.target.classList.contains("next")
+    ? (currentIndex + 1) % slides.length
+    : (currentIndex - 1 + slides.length) % slides.length;
+
+  slides[nextIndex].classList.add("active");
+});
+
+
 
 // 페이지 로딩 시, query값에 따라 API 요청 및 HTML 렌더링
 document.addEventListener("DOMContentLoaded", async () => {
