@@ -131,14 +131,21 @@
   }
 
   .search-box {
-    flex-direction: column;
-    gap: 8px;
-    padding: 16px;
+    flex-direction: row;  
+    gap: 8px;           
   }
 
-  .search-box input,
+  .search-box input {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;          
+  }
+
   .search-box button {
-    width: 100%;
+    flex-shrink: 0;
+    width: auto;     
+    padding: 8px 16px;
+    font-size: 0.95rem;
   }
 
   .examples {
