@@ -250,6 +250,7 @@ body {
   overflow: hidden;
   border-radius: 6px;
   background: #f4f4f4;
+  touch-action: pan-y;
 }
 
 .image-slider .slide {

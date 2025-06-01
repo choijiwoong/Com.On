@@ -79,6 +79,29 @@ const fetchFallbackFromN8N = async (questionText) => {
   }
 };
 
+// 슬라이더 터치 제스처 감지
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".image-slider").forEach((slider) => {
+    let startX = 0;
+
+    slider.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].clientX;
+    });
+
+    slider.addEventListener("touchend", (e) => {
+      const endX = e.changedTouches[0].clientX;
+      const deltaX = endX - startX;
+
+      if (Math.abs(deltaX) > 40) {
+        const direction = deltaX > 0 ? "prev" : "next";
+        const btn = slider.querySelector(`.slider-btn.${direction}`);
+        if (btn) btn.click();
+      }
+    });
+  });
+});
+
+
 // 추천 상품 HTML 블록을 문자열로 생성
 const renderProduct = (p) => {
   const images = p.images || [p.image];

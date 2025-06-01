@@ -1,0 +1,72 @@
+[목표]  
+다음 사용자 조건({{ $json.body.question }})에 맞는 실제 판매 중인 제품 3가지를 추천해줘.
+
+각 제품은 다음 기준을 충족해야 합니다:
+- 실제 판매 중인 제품일 것
+- `images`는 실제로 표시되는 유효한 이미지 URL 배열일 것 (최소 1개)
+- 링크는 아래 형식 고정:  
+  https://www.coupang.com/np/search?q=${p.name}&channel=recent
+
+---
+
+[출력 형식]
+
+1. 먼저 <p id="queryExplanation">...</p> 에 다음 3가지 내용을 하나의 문단으로 작성:
+
+- 사용자 조건을 바탕으로 고려한 주요 요소 요약 (성능, 디자인, 가격 등)
+- 해당 제품군을 선정한 이유
+- 감성적 + 신뢰감 있는 추천 메시지
+
+❗ 문단 분리 없이 하나로 작성  
+❗ 예시나 복붙 금지, 상황에 맞는 창의적 문장 구성
+
+---
+
+2. 제품 카드는 아래 HTML 구조로 **3개 반복**:
+
+<div class="product">
+  <div class="product-header">
+    <div class="image-slider">
+      ${p.images.map((img, i) => `
+        <img src="${img}" class="slide ${i === 0 ? 'active' : ''}" alt="${p.name} 이미지 ${i + 1}">
+      `).join('')}
+      ${p.images.length > 1 ? `
+        <button class="slider-btn prev">&#10094;</button>
+        <button class="slider-btn next">&#10095;</button>
+      ` : ''}
+    </div>
+    <div class="product-info">
+      <h2>💻 ${p.name}</h2>
+      <p><strong>가격:</strong> ${p.price}</p>
+      <p><strong>무게:</strong> ${p.weight}</p>
+      <p><strong>주요 기능:</strong> ${p.feature}</p>
+      <div class="review-box">
+        <span class="stars">⭐⭐⭐⭐☆</span>
+        <span class="score">${p.score} / 5</span>
+        <p class="quote">“${p.review}”</p>
+      </div>
+    </div>
+  </div>
+  <p class="highlight">${p.highlight}</p>
+  <a class="buy-button" href="https://www.coupang.com/np/search?q=${p.name}&channel=recent" target="_blank">🔗 상세페이지에서 자세히 보기</a>
+</div>
+
+---
+
+[${p.highlight} 작성 지침]
+
+- 사용자 조건과 해당 제품의 연결점을 감성적으로 3~4문장 서술
+- 단순한 "좋다", "인기 있다" 등의 표현은 지양
+- 신중하지만 설득력 있는 어조 사용
+
+---
+
+[주의사항 요약]
+
+- HTML만 출력 (마크다운 ❌)
+- `<p id="queryExplanation">` 문단은 하나만
+- 제품 구조 및 클래스명은 **절대 변경하지 말 것**
+- 링크는 검색 기반 쿠팡 URL로 고정
+- 모든 HTML은 innerHTML 삽입 용도이므로 잘 정리된 상태로 출력
+- 제품명은 반드시 **브랜드 + 모델명** 등 구체적이어야 함
+- `images`는 반드시 배열로 출력되며, 1개 이상 유효 이미지가 있어야 함
