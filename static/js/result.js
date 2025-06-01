@@ -73,7 +73,7 @@ const fetchFallbackFromN8N = async (questionText) => {
 		}
 	  }
 	}
-
+	enableTouchSlider(slider);//***********
   } catch (error) {
     container.innerHTML = `<p>❌ 기본 추천을 불러오지 못했어요: ${error.message}</p>`;
   }
@@ -100,6 +100,50 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+// 슬라이드 터치 기능 추가
+function enableTouchSlider(slider) {
+  const slides = slider.querySelectorAll(".slide");
+  if (slides.length <= 1) return;
+
+  let startX = 0;
+  let endX = 0;
+
+  slider.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+  });
+
+  slider.addEventListener("touchmove", (e) => {
+    endX = e.touches[0].clientX;
+  });
+
+  slider.addEventListener("touchend", () => {
+    if (startX === 0 || endX === 0) return;
+
+    const diff = endX - startX;
+    if (Math.abs(diff) < 30) return; // 최소 스와이프 거리
+
+    const slidesArray = Array.from(slides);
+    const currentIndex = slidesArray.findIndex((s) => s.classList.contains("active"));
+
+    let nextIndex;
+    if (diff < 0) {
+      // 오른쪽 → 왼쪽 (다음 슬라이드)
+      nextIndex = (currentIndex + 1) % slides.length;
+    } else {
+      // 왼쪽 → 오른쪽 (이전 슬라이드)
+      nextIndex = (currentIndex - 1 + slides.length) % slides.length;
+    }
+
+    slides[currentIndex].classList.remove("active");
+    slides[nextIndex].classList.add("active");
+
+    // 초기화
+    startX = 0;
+    endX = 0;
+  });
+}
+
 
 
 // 추천 상품 HTML 블록을 문자열로 생성
