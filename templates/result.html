@@ -102,6 +102,48 @@
     .buy-button:hover {
       background-color: #d9483b;
     }
+	
+	@media (max-width: 768px) {
+	  body {
+		padding: 20px 12px;
+	  }
+
+	  .navbar {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+	  }
+
+	  .navbar img {
+		width: 160px;
+		height: auto;
+	  }
+
+	  h1 {
+		font-size: 1.5rem;
+	  }
+
+	  .product-header {
+		flex-direction: column;
+		gap: 12px;
+	  }
+
+	  .product-header img {
+		width: 100%;
+		max-width: 100%;
+		height: auto;
+	  }
+
+	  .product-info {
+		width: 100%;
+	  }
+
+	  .buy-button {
+		width: 100%;
+		text-align: center;
+	  }
+	}
+
   </style>
 </head>
 <body>
