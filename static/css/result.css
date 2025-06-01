@@ -3,12 +3,14 @@
    result.html 전용 스타일 + 고급 로딩 애니메이션 추가
 ================================ */
 
+/* 전체 페이지 기본 여백 및 최대 너비 */
 body {
   padding: 40px 20px;
   max-width: 760px;
   margin: 0 auto;
 }
 
+/* 상단 네비게이션 바 */
 .navbar {
   display: flex;
   align-items: center;
@@ -18,6 +20,7 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
+/* 조건 문구 박스 */
 #queryText {
   background: var(--light-bg);
   padding: 12px 16px;
@@ -27,12 +30,14 @@ body {
   font-style: italic;
 }
 
+/* 설명 텍스트 */
 #queryExplanation {
   color: #555;
   font-size: 0.95rem;
   margin-bottom: 30px;
 }
 
+/* 로딩 비주얼 전체 박스 */
 .loading-visual {
   animation: fadeIn 0.5s ease-in-out;
   max-width: 600px;
@@ -44,6 +49,7 @@ body {
   text-align: center;
 }
 
+/* 문서 탐색 숫자 카운트 */
 .doc-count {
   font-size: 1.2rem;
   font-weight: 600;
@@ -51,6 +57,7 @@ body {
   margin-bottom: 20px;
 }
 
+/* 문서 아이콘 묶음 */
 .doc-icons {
   display: flex;
   flex-wrap: wrap;
@@ -58,6 +65,7 @@ body {
   gap: 12px;
 }
 
+/* 개별 문서 아이콘 애니메이션 */
 .doc-icon {
   font-size: 2rem;
   opacity: 0.85;
@@ -65,6 +73,7 @@ body {
   transform-origin: center;
 }
 
+/* 아이콘별 애니메이션 딜레이 */
 .doc-icon:nth-child(1) { animation-delay: 0s; }
 .doc-icon:nth-child(2) { animation-delay: 0.2s; }
 .doc-icon:nth-child(3) { animation-delay: 0.4s; }
@@ -73,17 +82,20 @@ body {
 .doc-icon:nth-child(6) { animation-delay: 1s; }
 .doc-icon:nth-child(7) { animation-delay: 1.2s; }
 
+/* 문서 아이콘 부드러운 떠오름 + 회전 효과 */
 @keyframes floatSpin {
   0%   { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
   50%  { transform: translateY(-10px) rotate(5deg); opacity: 1; }
   100% { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
 }
 
+/* 로딩 요소 페이드 인 */
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.97); }
   to   { opacity: 1; transform: scale(1); }
 }
 
+/* 제품 카드 전체 */
 .product {
   background: #fff;
   border-radius: 12px;
@@ -92,12 +104,14 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
+/* 제품 헤더 (이미지 + 텍스트 수평 정렬) */
 .product-header {
   display: flex;
   flex-direction: row;
   gap: 20px;
 }
 
+/* 제품 이미지 */
 .product-header img {
   width: 180px;
   border-radius: 6px;
@@ -105,10 +119,12 @@ body {
   flex-shrink: 0;
 }
 
+/* 제품 설명 텍스트 영역 */
 .product-info {
   flex: 1;
 }
 
+/* 후기 박스 */
 .review-box {
   background: var(--light-bg);
   padding: 8px 12px;
@@ -117,28 +133,33 @@ body {
   margin-top: 6px;
 }
 
+/* 별 아이콘 */
 .stars {
   color: #f59e0b;
 }
 
+/* 평점 숫자 */
 .score {
   font-weight: bold;
   margin-left: 8px;
   color: var(--main-color);
 }
 
+/* 인용 리뷰 */
 .quote {
   font-style: italic;
   margin-top: 4px;
   color: #555;
 }
 
+/* 강조 문장 */
 .highlight {
   margin-top: 16px;
   font-size: 0.95rem;
   color: #333;
 }
 
+/* 구매 버튼 */
 .buy-button {
   display: inline-block;
   margin-top: 20px;
@@ -155,6 +176,7 @@ body {
   background-color: #d9483b;
 }
 
+/* 로고 이미지 설정 */
 .logo-img {
   display: block;
   height: auto;
@@ -164,6 +186,7 @@ body {
   object-fit: contain;
 }
 
+/* 네비게이션 텍스트 설정 */
 .navbar-title {
   font-size: 1.5rem;
   font-weight: bold;
@@ -171,6 +194,9 @@ body {
   color: #000;
 }
 
+/* ===============================
+   📱 반응형: 모바일 최적화
+================================ */
 @media (max-width: 768px) {
   .logo-img {
     max-height: 80px;
