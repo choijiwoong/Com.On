@@ -18,6 +18,10 @@ def api_questions():
     with open(os.path.join(app.static_folder, "questions.json"), encoding="utf-8") as f:
         return jsonify(json.load(f))
 
+@app.route("/api/keep-alive")
+def receive_ping():
+    return "true"
+
 @app.route("/api/products")
 def api_products():
     query = request.args.get("query", "")
