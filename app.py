@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, make_response
 import json
 import logging
 import os
 from googlesearch import search
 from datetime import datetime
+import uuid
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -14,18 +15,40 @@ log.setLevel(logging.INFO)  # ERROR CRITICAL WARNING INFO
 
 @app.route("/")
 def index():
-    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    log_msg = f"{now} [LOG] 서비스 접속"
-    app.logger.info(log_msg)
+    user_id = request.cookies.get("user_id")
+    if not user_id:
+        user_id = str(uuid.uuid4())  # 고유 사용자 ID 생성
+        response = make_response(render_template("index.html"))
+        response.set_cookie("user_id", user_id, max_age=60*60*24*30)  # 30일간 유지
+        app.logger.info(f"[LOG] 신규 사용자 방문 | ID: {user_id}")
+        return response
+    else:
+        app.logger.info(f"[LOG] 기존 사용자 방문 | ID: {user_id}")
+        return render_template("index.html")
     return render_template("index.html")
 
 @app.route("/result.html")
 def result():
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     query = request.args.get("query", "쿼리 없음")
-    log_msg = f"{now} [LOG] 결과창 이동 | query = {query}"
+
+    # 쿠키 확인 및 사용자 ID 추출 (없으면 신규 생성)
+    user_id = request.cookies.get("user_id")
+    new_user = False
+    if not user_id:
+        user_id = str(uuid.uuid4())
+        new_user = True
+
+    # 로그 출력
+    log_msg = f"{now} [LOG] 결과창 이동 | query = {query} | 사용자: {user_id}"
     app.logger.info(log_msg)
-    return render_template("result.html")
+
+    # 결과 페이지 렌더링 및 쿠키 설정
+    response = make_response(render_template("result.html"))
+    if new_user:
+        response.set_cookie("user_id", user_id, max_age=60 * 60 * 24 * 30)  # 30일
+
+    return response
 
 @app.route("/api/questions")
 def api_questions():
@@ -66,12 +89,14 @@ def api_google_search():
 def log_click():
     data = request.get_json()
     product_name = data.get('product_name', 'Unknown')
+    user_id = request.cookies.get("user_id", "익명")
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    log_msg = f"{now} [LOG] 상세클릭 | {product_name}"
+    log_msg = f"[LOG] 상세클릭 {now} | {product_name}  | 사용자: {user_id}"
     app.logger.info(log_msg)
 
     return '', 200
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
