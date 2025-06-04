@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
       questions.forEach(q => {
         const btn = document.createElement("button");
         btn.textContent = q.text;
+        btn.id = q.id;
         btn.onclick = () => {
           document.getElementById("userQuery").value = q.text;
         };
