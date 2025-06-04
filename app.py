@@ -9,13 +9,22 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.INFO)  # ERROR CRITICAL WARNING INFO
 
 @app.route("/")
 def index():
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    log_msg = f"{now} [LOG] 서비스 접속"
+    app.logger.info(log_msg)
     return render_template("index.html")
 
 @app.route("/result.html")
 def result():
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    query = request.args.get("query", "쿼리 없음")
+    log_msg = f"{now} [LOG] 결과창 이동 | query = {query}"
+    app.logger.info(log_msg)
     return render_template("result.html")
 
 @app.route("/api/questions")
@@ -59,7 +68,7 @@ def log_click():
     product_name = data.get('product_name', 'Unknown')
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    log_msg = f"[LOG].상세클릭 {now} | {product_name} 클릭됨"
+    log_msg = f"{now} [LOG] 상세클릭 | {product_name}"
     app.logger.info(log_msg)
 
     return '', 200
