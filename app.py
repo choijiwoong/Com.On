@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 import json
+import logging
 import os
 from googlesearch import search
+from datetime import datetime
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
+
+# 로깅 설정
+logging.basicConfig(level=logging.INFO)
 
 @app.route("/")
 def index():
@@ -47,7 +52,17 @@ def api_google_search():
         return jsonify({"results": list(urls)})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+        
+@app.route('/log/click', methods=['POST'])
+def log_click():
+    data = request.get_json()
+    product_name = data.get('product_name', 'Unknown')
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+    log_msg = f"[LOG].상세클릭 {now} | {product_name} 클릭됨"
+    app.logger.info(log_msg)
+
+    return '', 200
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

@@ -100,6 +100,19 @@ function renderStars(score) {
   return starsHTML;
 }
 
+function trackProductClick(productName, productLink) {
+    fetch('/log/click', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        product_name: productName,
+        product_link: productLink,
+        timestamp: new Date().toISOString()
+      })
+    }).catch(err => console.error('❌ 로그 전송 실패:', err));
+  }
 
 // 추천 상품 HTML 블록을 문자열로 생성
 const renderProduct = (p) => {
@@ -129,10 +142,37 @@ const renderProduct = (p) => {
         </div>
       </div>
       <p class="highlight">${p.highlight}</p>
-      <a class="buy-button" href="${p.link}" target="_blank" data-product="${p.name}">🔗 상세페이지에서 자세히 보기</a>
+	<a class="buy-button"
+	   href="${p.link}"
+	   target="_blank"
+	   data-product="${p.name}"
+	   data-link="${p.link}">
+	   🔗 상세페이지에서 자세히 보기
+	</a>
+
     </div>
   `;
 };
+
+// JS 하단에 클릭 이벤트 위임 추가
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".buy-button");
+  if (!btn) return;
+
+  const productName = btn.getAttribute("data-product");
+  const productLink = btn.getAttribute("data-link");
+
+  fetch("/log/click", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      product_name: productName,
+      product_link: productLink,
+      timestamp: new Date().toISOString()
+    })
+  });
+});
+
 
 document.addEventListener("click", (e) => {
   if (!e.target.classList.contains("slider-btn")) return;
