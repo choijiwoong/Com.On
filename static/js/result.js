@@ -129,7 +129,7 @@ const renderProduct = (p) => {
         </div>
       </div>
       <p class="highlight">${p.highlight}</p>
-      <a class="buy-button" href="${p.link}" target="_blank">🔗 상세페이지에서 자세히 보기</a>
+      <a class="buy-button" href="${p.link}" target="_blank" data-product="${p.name}">🔗 상세페이지에서 자세히 보기</a>
     </div>
   `;
 };
