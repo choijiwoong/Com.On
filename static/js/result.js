@@ -112,7 +112,7 @@ function renderStars(score) {
   return starsHTML;
 }
 
-function trackProductClick(productName, productLink) {
+function trackProductClick(productName, productLink, query) {
     fetch('/log/click', {
       method: 'POST',
       headers: {
@@ -121,6 +121,7 @@ function trackProductClick(productName, productLink) {
       body: JSON.stringify({
         product_name: productName,
         product_link: productLink,
+        product_query: query,
         timestamp: new Date().toISOString()
       })
     }).catch(err => console.error('❌ 로그 전송 실패:', err));
@@ -173,18 +174,10 @@ document.addEventListener("click", (e) => {
 
   const productName = btn.getAttribute("data-product");
   const productLink = btn.getAttribute("data-link");
+  const queryFromAttr = btn.getAttribute("data-query") || query; // fallback
 
-  fetch("/log/click", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      product_name: productName,
-      product_link: productLink,
-      timestamp: new Date().toISOString()
-    })
-  });
+  trackProductClick(productName, productLink, queryFromAttr);
 });
-
 
 document.addEventListener("click", (e) => {
   if (!e.target.classList.contains("slider-btn")) return;

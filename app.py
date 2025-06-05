@@ -12,7 +12,7 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)  # ERROR CRITICAL WARNING INFO
-
+	
 @app.route("/")
 def index():
     user_id = request.cookies.get("user_id")
@@ -89,10 +89,11 @@ def api_google_search():
 def log_click():
     data = request.get_json()
     product_name = data.get('product_name', 'Unknown')
+    query = data.get('product_query', 'Unknown')
     user_id = request.cookies.get("user_id", "익명")
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    log_msg = f"[LOG] 상세클릭 {now} | {product_name}  | 사용자: {user_id}"
+    log_msg = f"[LOG] 상세클릭 {now} | {product_name}  | {query} | 사용자: {user_id}"
     app.logger.info(log_msg)
 
     return '', 200
