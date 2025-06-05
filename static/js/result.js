@@ -62,7 +62,7 @@ const fetchFallbackFromN8N = async (questionText) => {
     if (!response.ok) throw new Error("네트워크 오류 발생");
 
     const html = await response.text();
-    container.innerHTML = `<p id="queryExplanation"> (안내 메시지: 현재 구현 중인 기능입니다. 간단한 포맷을 참고해주시고 피드백해주시면 감사드리겠습니다.)</p>` + html;
+    container.innerHTML = `<p id="queryExplanation"></p>` + html;
 
     // 썸네일 이미지 자동 교체
     const products = container.querySelectorAll(".product");
@@ -206,6 +206,19 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function insertFooter() {
+  const footer = document.createElement("footer");
+  footer.style.marginTop = "60px";
+  footer.style.padding = "20px 0";
+  footer.style.textAlign = "center";
+  footer.style.fontSize = "0.9rem";
+  footer.style.color = "#888";
+  footer.innerText = '"위 결과는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다."';
+
+  document.body.appendChild(footer);
+}
+
+
 // 페이지 로딩 시, query값에 따라 API 요청 및 HTML 렌더링
 document.addEventListener("DOMContentLoaded", async () => {
   const queryBox = document.getElementById("queryText");
@@ -230,6 +243,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       
       await new Promise(r => setTimeout(r, Math.random() * 2000 + 3000)); // 3~5초 대기
       container.innerHTML = ""; // 로딩 화면 제거
+      insertFooter();
       
       explanationBox.innerText = data.explanation || "";
       data.products.forEach(p => {
@@ -289,4 +303,3 @@ function startFancyLoading() {
 
   return () => clearInterval(interval);
 }
-
