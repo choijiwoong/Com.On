@@ -230,6 +230,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!data.products || data.products.length === 0) {
         await fetchFallbackFromN8N(query);
         insertFeedbackSection();
+        renderFollowupSearchBox();
         return;
       }
       
@@ -245,6 +246,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       queryBox.innerText = "추천 상품을 불러오는 데 문제가 발생했어요.";
       await fetchFallbackFromN8N(query);
     }
+    renderFollowupSearchBox();
     insertFeedbackSection();
     insertFooter();
   } else {
@@ -321,5 +323,34 @@ function insertFeedbackSection() {
   `;
 
   document.body.appendChild(section);
+}
+
+function renderFollowupSearchBox() {
+  if (!query) return;
+
+  const container = document.getElementById("followup-search");
+  if (!container) return;
+
+  container.innerHTML = `
+    <p class="description">
+      🔍 더 원하는 조건이 있으신가요?<br>
+      추가 키워드를 입력해 이어서 검색해보세요!
+    </p>
+    <form class="search-box" onsubmit="followupSearch(); return false;">
+      <input
+        type="text"
+        id="followupInput"
+        placeholder="예: 마음이 바뀌었어!"
+      />
+      <button type="submit">이어서 검색</button>
+    </form>
+  `;
+}
+function followupSearch() {
+  const extra = document.getElementById("followupInput").value.trim();
+  if (!extra) return;
+
+  const newQuery = `${query} ${extra}`.trim();
+  location.href = `/result.html?query=${encodeURIComponent(newQuery)}`;
 }
 

@@ -38,6 +38,54 @@ button {
   cursor: pointer;
 }
 
+/* 검색창 컨테이너 */
+.search-box {
+  display: flex;
+  max-width: 600px;
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid var(--main-color);
+  border-radius: 999px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  margin-top: 24px;
+  transition: box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* 검색창 포커스 시 그림자 강조 */
+.search-box:focus-within {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+/* 검색 입력창 */
+.search-box input {
+  flex: 1 1 auto;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  padding: 8px;
+  background: transparent;
+  color: #000;
+  min-width: 0;
+}
+
+/* 검색 버튼 */
+.search-box button {
+  background: var(--main-color);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.search-box button:hover {
+  background: var(--hover-color);
+}
+
 /* 반응형: 모바일 화면용 타이포 및 여백 조정 */
 @media (max-width: 768px) {
   body {

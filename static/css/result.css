@@ -195,6 +195,15 @@ body {
   color: #000;
 }
 
+/* 안내 문구 */
+#followup-search .description {
+  font-size: 1.05rem;
+  color: #444;
+  text-align: center;
+  margin: 40px 0 12px;
+  line-height: 1.6;
+}
+
 /* ===============================
    📱 반응형: 모바일 최적화
 ================================ */
