@@ -112,7 +112,7 @@ function renderStars(score) {
   return starsHTML;
 }
 
-function trackProductClick(productName, productLink, query) {
+function trackProductClick(productName, productLink, query_) {
     fetch('/log/click', {
       method: 'POST',
       headers: {
@@ -121,7 +121,7 @@ function trackProductClick(productName, productLink, query) {
       body: JSON.stringify({
         product_name: productName,
         product_link: productLink,
-        product_query: query,
+        product_query: query_,// query_
         timestamp: new Date().toISOString()
       })
     }).catch(err => console.error('❌ 로그 전송 실패:', err));
@@ -171,11 +171,9 @@ const renderProduct = (p) => {
 document.addEventListener("click", (e) => {
   const btn = e.target.closest(".buy-button");
   if (!btn) return;
-
   const productName = btn.getAttribute("data-product");
   const productLink = btn.getAttribute("data-link");
   const queryFromAttr = btn.getAttribute("data-query") || query; // fallback
-
   trackProductClick(productName, productLink, queryFromAttr);
 });
 
