@@ -304,6 +304,32 @@ body {
   right: 6px;
 }
 
+#followup-search {
+  width: 100%;
+}
+
+#followup-search .followup-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  border-radius: 16px;
+  max-width: 720px; /* 기존 질문카드 폭과 동일하게 */
+  margin: 30px auto 0;
+  background: #ffffff;  /* 더 하얗게 설정 */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+
+.search-box {
+  width: 100%;
+  max-width: 600px;  /* 이미 설정되어 있음 */
+}
+
+
 @media (max-width: 768px) {
   .image-slider {
     width: 100%;

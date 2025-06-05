@@ -332,6 +332,7 @@ function renderFollowupSearchBox() {
   if (!container) return;
 
   container.innerHTML = `
+  <div class="followup-box">
     <p class="description">
       🔍 더 원하는 조건이 있으신가요?<br>
       추가 키워드를 입력해 이어서 검색해보세요!
@@ -344,7 +345,8 @@ function renderFollowupSearchBox() {
       />
       <button type="submit">이어서 검색</button>
     </form>
-  `;
+  </div>
+`;
 }
 function followupSearch() {
   const extra = document.getElementById("followupInput").value.trim();
