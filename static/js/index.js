@@ -47,7 +47,7 @@ function fillExample(el) {
   input.value = ""; // 기존 입력 초기화
 
   let index = 0;
-  const typingSpeed = 50; // 밀리초 단위 속도 (원하는 속도로 조절)
+  const typingSpeed = 30; // 밀리초 단위 속도 (원하는 속도로 조절)
 
   // 타이핑 효과 구현
   const typingInterval = setInterval(() => {
@@ -60,7 +60,7 @@ function fillExample(el) {
       // 타이핑이 끝난 후 자동 검색 이동
       setTimeout(() => {
         window.location.href = `result.html?query=${encodeURIComponent(text)}`;
-      }, 300); // 살짝 여유 주기
+      }, 250); // 살짝 여유 주기
     }
   }, typingSpeed);
 }
