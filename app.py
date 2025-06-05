@@ -97,6 +97,17 @@ def log_click():
     app.logger.info(log_msg)
 
     return '', 200
+    
+@app.errorhandler(404)
+def page_not_found(e):
+    user_id = request.cookies.get("user_id", "익명")
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    url = request.url  # 🔹 여기가 핵심
+    log_msg = f"[LOG] ERROR 404 {now} | {url} | 사용자: {user_id}"
+    app.logger.info(log_msg)
+
+    return render_template("404.html"), 404
+
 
 
 if __name__ == "__main__":
