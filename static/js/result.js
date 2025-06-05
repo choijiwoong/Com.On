@@ -220,8 +220,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     queryBox.innerText = `💬 “${query}” 조건에 맞는 추천 리스트입니다.`;
 
     try {
-      startFancyLoading(); // 로딩 시작
     
+      startFancyLoading(); // 로딩 시작
+      insertFeedbackSection();
       const res = await fetch(`/api/products?query=${encodeURIComponent(query)}`);
       const data = await res.json();
 
@@ -229,7 +230,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!data.products || data.products.length === 0) {
         await fetchFallbackFromN8N(query);
-        insertFeedbackSection();
+        //insertFeedbackSection();
         renderFollowupSearchBox();
         return;
       }
@@ -247,7 +248,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await fetchFallbackFromN8N(query);
     }
     renderFollowupSearchBox();
-    insertFeedbackSection();
+    //insertFeedbackSection();
     insertFooter();
   } else {
     queryBox.innerText = "💬 조건을 인식하지 못했어요. 기본 추천 리스트를 보여드릴게요.";
