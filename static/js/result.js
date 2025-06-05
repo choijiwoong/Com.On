@@ -308,7 +308,7 @@ function insertFeedbackSection() {
 
   section.innerHTML = `
     <p>📬 서비스에 대한 피드백이 있으신가요?<br>
-    아래 오픈채팅방을 통해 언제든지 의견을 나눠주세요!</p>
+    아래 오픈채팅방을 통해 언제든지<br>의견을 나눠주세요!</p>
     
     <a href="https://open.kakao.com/o/glqkU8zh" target="_blank" style="display:inline-block; margin: 10px; font-weight: bold; color: #0068ff; text-decoration: none;">
       👉 오픈채팅방 바로가기
@@ -335,7 +335,7 @@ function renderFollowupSearchBox() {
   <div class="followup-box">
     <p class="description">
       🔍 더 원하는 조건이 있으신가요?<br>
-      추가 키워드를 입력해 이어서 검색해보세요!
+      추가 키워드를 이어서 입력해 보세요!
     </p>
     <form class="search-box" onsubmit="followupSearch(); return false;">
       <input
