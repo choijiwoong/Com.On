@@ -261,14 +261,17 @@ function startFancyLoading() {
   const countSpan = document.getElementById("doc-count");
   const docText = document.querySelector(".doc-count");
 
+  // 80 ~ 120 사이의 랜덤 목표값 설정
+  const targetCount = Math.floor(Math.random() * 41) + 80;
+
   const interval = setInterval(() => {
     const increment = Math.floor(Math.random() * 4) + 2;
     count += increment;
 
-    if (count >= 92) {
+    if (count >= targetCount) {
       clearInterval(interval);
-      countSpan.textContent = "약 92";
-      docText.innerHTML = `📄 약 92개의 문서를 탐색했습니다.<br>잠시만 기다려주세요...`;
+      countSpan.textContent = `약 ${targetCount}`;
+      docText.innerHTML = `📄 약 ${targetCount}개의 문서를 탐색했습니다.<br>잠시만 기다려주세요...`;
     } else {
       countSpan.textContent = count;
     }
@@ -276,3 +279,4 @@ function startFancyLoading() {
 
   return () => clearInterval(interval);
 }
+
