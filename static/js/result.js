@@ -343,7 +343,7 @@ function renderFollowupSearchBox() {
         id="followupInput"
         placeholder="예: 마음이 바뀌었어!"
       />
-      <button type="submit">이어서 검색</button>
+      <button type="submit">검색</button>
     </form>
   </div>
 `;
