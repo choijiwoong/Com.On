@@ -318,7 +318,6 @@ body {
   max-width: 720px; /* 기존 질문카드 폭과 동일하게 */
   margin: 30px auto 0;
   background: #ffffff;  /* 더 하얗게 설정 */
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   box-sizing: border-box;
   width: 100%;
 }
