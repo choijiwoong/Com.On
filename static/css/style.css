@@ -5,10 +5,11 @@
 
 /* 테마 컬러 변수 정의 */
 :root {
-  --main-color: #f35a4a;
-  --hover-color: #e14b3d;
-  --light-bg: #fff0eb;
+  --main-color: #4a90e2;    /* 푸른 계열: 선명한 파랑 */
+  --hover-color: #357ABD;   /* hover용: 살짝 더 진한 블루 */
+  --light-bg: #eaf4ff;      /* 연한 파란 배경 (기존 #fff0eb에서 교체) */
 }
+
 
 /* 전체 뷰포트 가로 스크롤 방지 */
 html, body {
