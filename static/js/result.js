@@ -202,6 +202,10 @@ document.addEventListener("click", (e) => {
   slides[nextIndex].classList.add("active");
 });
 
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // 페이지 로딩 시, query값에 따라 API 요청 및 HTML 렌더링
 document.addEventListener("DOMContentLoaded", async () => {
   const queryBox = document.getElementById("queryText");
@@ -212,16 +216,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     queryBox.innerText = `💬 “${query}” 조건에 맞는 추천 리스트입니다.`;
 
     try {
+      startFancyLoading(); // 로딩 시작
+    
       const res = await fetch(`/api/products?query=${encodeURIComponent(query)}`);
       const data = await res.json();
 
-      explanationBox.innerText = data.explanation || "";
+      
 
       if (!data.products || data.products.length === 0) {
         await fetchFallbackFromN8N(query);
         return;
       }
-
+      
+      await new Promise(r => setTimeout(r, Math.random() * 2000 + 3000)); // 3~5초 대기
+      container.innerHTML = ""; // 로딩 화면 제거
+      
+      explanationBox.innerText = data.explanation || "";
       data.products.forEach(p => {
         container.insertAdjacentHTML("beforeend", renderProduct(p));
       });
