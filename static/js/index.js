@@ -22,9 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const btn = document.createElement("button");
         btn.textContent = q.text;
         btn.id = q.id;
-        btn.onclick = () => {
-          document.getElementById("userQuery").value = q.text;
-        };
+        btn.onclick = () => fillExample(btn);
         list.appendChild(btn);
       });
     })
@@ -43,7 +41,12 @@ function goToResult() {
   }
 }
 
-// 예시 버튼 클릭 시 입력창에 텍스트 채워넣기
+// 예시 버튼 클릭 시 입력창에 텍스트 채워넣고 바로 검색
 function fillExample(el) {
-  document.getElementById("userQuery").value = el.textContent;
+  const queryText = el.textContent.trim();
+  document.getElementById("userQuery").value = queryText;
+
+  if (queryText) {
+    window.location.href = `result.html?query=${encodeURIComponent(queryText)}`;
+  }
 }
