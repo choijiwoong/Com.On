@@ -173,7 +173,7 @@ document.addEventListener("click", (e) => {
   if (!btn) return;
   const productName = btn.getAttribute("data-product");
   const productLink = btn.getAttribute("data-link");
-  const queryFromAttr = btn.getAttribute("data-query") || query; // fallback
+  const queryFromAttr = query; // fallback(프롬프트에 data-query삭제 필요)
   trackProductClick(productName, productLink, queryFromAttr);
 });
 
