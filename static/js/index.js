@@ -41,12 +41,27 @@ function goToResult() {
   }
 }
 
-// 예시 버튼 클릭 시 입력창에 텍스트 채워넣고 바로 검색
 function fillExample(el) {
-  const queryText = el.textContent.trim();
-  document.getElementById("userQuery").value = queryText;
+  const input = document.getElementById("userQuery");
+  const text = el.textContent.trim();
+  input.value = ""; // 기존 입력 초기화
 
-  if (queryText) {
-    window.location.href = `result.html?query=${encodeURIComponent(queryText)}`;
-  }
+  let index = 0;
+  const typingSpeed = 50; // 밀리초 단위 속도 (원하는 속도로 조절)
+
+  // 타이핑 효과 구현
+  const typingInterval = setInterval(() => {
+    if (index < text.length) {
+      input.value += text.charAt(index);
+      index++;
+    } else {
+      clearInterval(typingInterval);
+
+      // 타이핑이 끝난 후 자동 검색 이동
+      setTimeout(() => {
+        window.location.href = `result.html?query=${encodeURIComponent(text)}`;
+      }, 300); // 살짝 여유 주기
+    }
+  }, typingSpeed);
 }
+
