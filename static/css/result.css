@@ -385,5 +385,29 @@ body {
   .image-slider .slide.active {
     display: block;
   }
+  
+  .refine-guidance {
+    font-size: 0.92rem;
+    padding: 14px 16px;
+  }
+
+  .refine-block {
+    padding: 10px;
+  }
+
+  .refine-title {
+    font-size: 0.95rem;
+  }
+
+  .refine-options {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .refine-option {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    text-align: center;
+  }
 }
 
