@@ -53,7 +53,7 @@ const fetchFallbackFromN8N = async (questionText) => {
   container.innerHTML = `<p class="loading-animated">🌀 맞춤형 추천을 불러오는 중</p>`;
   startFancyLoading();
   try {
-    const response = await fetch('https://n8n.1000.school/webhook/c932befe-195e-46b0-8502-39c9b1c69cc2', {
+    const response = await fetch('https://n8n.1000.school/webhook/e167ca4a-ea51-4f12-85d1-c31acd94f3c0', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: questionText || "기본 추천 리스트 보여줘" })
@@ -231,6 +231,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!data.products || data.products.length === 0) {
         await fetchFallbackFromN8N(query);
         //insertFeedbackSection();
+		bindRefineOptionClick();
         renderFollowupSearchBox();
         return;
       }
@@ -349,11 +350,29 @@ function renderFollowupSearchBox() {
   </div>
 `;
 }
+
 function followupSearch() {
   const extra = document.getElementById("followupInput").value.trim();
   if (!extra) return;
 
   const newQuery = `${query} ${extra}`.trim();
   location.href = `/result.html?query=${encodeURIComponent(newQuery)}`;
+}
+
+
+function bindRefineOptionClick() {
+  document.querySelectorAll('.refine-option').forEach(el => {
+    el.addEventListener('click', () => {
+      const extra = el.dataset.query;
+      const input = document.getElementById('followupInput');
+      if (!extra || !input) return;
+
+      // 기존 입력 내용과 공백으로 구분하여 덧붙이기
+	  input.value = `${input.value} ${extra}`;
+
+      // 입력창 포커스 주기
+      input.focus();
+    });
+  });
 }
 

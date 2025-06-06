@@ -272,6 +272,62 @@ body {
 .slider-btn.prev { left: 6px; }
 .slider-btn.next { right: 6px; }
 
+#refine-question {
+  margin-top: 20px;
+}
+
+.refine-block {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  background-color: #f8f9fa;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.refine-title {
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.refine-options {
+  display: flex;
+  gap: 12px;
+}
+
+.refine-option {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 20px;
+  background-color: #eef4ff;
+  color: #1d4ed8;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.refine-option:hover {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+.refine-guidance {
+  background-color: #f4f8ff; /* 은은한 블루톤 배경 */
+  border: 1px solid #d0e3ff; /* 연한 테두리 */
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 24px 0 16px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #2251a4; /* 진한 블루톤 텍스트 */
+  text-align: center;
+  line-height: 1.6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+
+
 /* ===============================
    📱 반응형: 모바일 최적화
 ================================ */
