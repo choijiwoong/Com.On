@@ -369,9 +369,6 @@ function bindRefineOptionClick() {
 
       // 기존 입력 내용과 공백으로 구분하여 덧붙이기
 	  input.value = `${input.value} ${extra}`;
-
-      // 입력창 포커스 주기
-      input.focus();
     });
   });
 }
