@@ -356,7 +356,7 @@ function followupSearch() {
   if (!extra) return;
 
   const newQuery = `${query} ${extra}`.trim();
-  location.href = `/result.html?query=${encodeURIComponent(newQuery)}`;
+  location.href = `/search?query=${encodeURIComponent(newQuery)}`;
 }
 
 
