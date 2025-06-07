@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Open Graph for Com.On -->
   <meta property="og:title" content="Com.On - 당신만을 위한 AI 쇼핑 추천" />
-  <meta property="og:description" content="당신의 조건에 딱 맞는 제품을 3초 만에 추천받아보세요. 단순한 검색을 넘어서, Com.On은 생각을 읽습니다." />
+  <meta property="og:description" content="당신의 조건에 딱 맞는 제품을 3초 만에 추천받아보세요. 단순한 검색을 넘어서, com.on은 생각을 읽습니다." />
   <meta property="og:image" content="https://velog.velcdn.com/images/gogogi313/post/9deaea85-bf79-4629-86d1-9e1465f0b334/image.jpg" />
   <meta property="og:url" content="https://com-on.onrender.com" />
   <meta property="og:type" content="website" />
@@ -15,8 +15,8 @@
   <meta name="twitter:title" content="Com.On - 당신만을 위한 AI 쇼핑 추천" />
   <meta name="twitter:description" content="내가 찾던 조건, 딱 맞게 추천받고 싶다면? Com.On으로 시작하세요." />
   <meta name="twitter:image" content="https://velog.velcdn.com/images/gogogi313/post/9deaea85-bf79-4629-86d1-9e1465f0b334/image.jpg" />
-
-  <title>Com.On - 검색</title>
+  
+  <title>com.on - 검색</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
@@ -33,13 +33,12 @@
           class="logo-img"
         />
 	  </a>
-      <h1 class="logo-text">Com.On</h1>
+      <h1 class="logo-text">com.on</h1>
     </div>
-	
 
-    <p class="description">
-      당신의 조건에 딱 맞는 제품을 대화로 검색해보세요
-    </p>
+    <div class="examples">
+      <div class="example-list" id="example-list"></div>
+    </div>
 
     <form class="search-box" onsubmit="goToResult(); return false;">
       <input
@@ -49,11 +48,6 @@
       />
       <button type="submit">검색</button>
     </form>
-
-    <div class="examples">
-      <p class="examples-title">💬 예시로 이런 질문은 어때요?</p>
-      <div class="example-list" id="example-list"></div>
-    </div>
   </div>
 
   <footer style="margin-top: 60px; padding: 20px 0; text-align: center; font-size: 0.9rem; color: #888;">

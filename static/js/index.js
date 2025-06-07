@@ -10,26 +10,58 @@
   f.parentNode.insertBefore(j, f);
 })(window, document, 'script', 'dataLayer', 'GTM-MZHQSKG5');
 
-// 예시 질문 버튼을 불러와서 렌더링
+let currentIndex = 0;
+let questions = [];
+
+function showNextQuestion() {
+  const list = document.getElementById("example-list");
+  if (!list || questions.length === 0) return;
+
+  // 기존 버튼 제거 애니메이션
+  const oldBtn = list.querySelector("button");
+  if (oldBtn) {
+    oldBtn.classList.remove("fade-slide-in");
+    oldBtn.classList.add("fade-slide-out");
+
+    setTimeout(() => {
+      list.innerHTML = ""; // 완전히 제거
+      insertNewButton();
+    }, 600); // fade-slide-out 지속시간과 맞춤
+  } else {
+    insertNewButton();
+  }
+}
+
+function insertNewButton() {
+  const list = document.getElementById("example-list");
+  const q = questions[currentIndex];
+
+  const btn = document.createElement("button");
+  btn.textContent = `Q. ${q.text}`;
+  btn.dataset.query = q.text;              // 실제 검색용 텍스트 저장(Q. 제거)
+  btn.id = q.id;
+  btn.classList.add("fade-slide-in");
+  btn.onclick = () => fillExample(btn);
+
+  list.appendChild(btn);
+
+  // 인덱스 순환
+  currentIndex = (currentIndex + 1) % questions.length;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   fetch('/api/questions')
     .then(res => res.json())
-    .then(questions => {
-      const list = document.getElementById("example-list");
-      if (!list) return;
-
-      questions.forEach(q => {
-        const btn = document.createElement("button");
-        btn.textContent = q.text;
-        btn.id = q.id;
-        btn.onclick = () => fillExample(btn);
-        list.appendChild(btn);
-      });
+    .then(data => {
+      questions = data;
+      showNextQuestion(); // 첫 질문 표시
+      setInterval(showNextQuestion, 7000); // 7초마다 순환
     })
     .catch(err => {
       console.error("❌ 질문 로딩 실패:", err);
     });
 });
+
 
 // 검색 버튼 클릭 시 결과 페이지로 이동
 function goToResult() {
@@ -43,7 +75,7 @@ function goToResult() {
 
 function fillExample(el) {
   const input = document.getElementById("userQuery");
-  const text = el.textContent.trim();
+  const text = el.dataset.query;  // ✅ 실제 질문 텍스트 가져오기
   input.value = ""; // 기존 입력 초기화
 
   let index = 0;
