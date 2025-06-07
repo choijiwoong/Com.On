@@ -53,7 +53,7 @@ const fetchFallbackFromN8N = async (questionText) => {
   container.innerHTML = `<p class="loading-animated">🌀 맞춤형 추천을 불러오는 중</p>`;
   startFancyLoading();
   try {
-    const response = await fetch('https://n8n.1000.school/webhook/e167ca4a-ea51-4f12-85d1-c31acd94f3c0', {
+    const response = await fetch('https://n8n.1000.school/webhook/c932befe-195e-46b0-8502-39c9b1c69cc2', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: questionText || "기본 추천 리스트 보여줘" })
