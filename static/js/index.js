@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function goToResult() {
   const query = document.getElementById("userQuery").value;
   if (query.trim()) {
-    window.location.href = `result.html?query=${encodeURIComponent(query)}`;
+    window.location.href = `search?query=${encodeURIComponent(query)}`;
   } else {
     alert("🛠️ 기능 구현 중입니다.\n아래 질문카드를 눌러 테스트해보세요!");
   }
@@ -59,7 +59,7 @@ function fillExample(el) {
 
       // 타이핑이 끝난 후 자동 검색 이동
       setTimeout(() => {
-        window.location.href = `result.html?query=${encodeURIComponent(text)}`;
+        window.location.href = `search?query=${encodeURIComponent(text)}`;
       }, 250); // 살짝 여유 주기
     }
   }, typingSpeed);

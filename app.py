@@ -27,7 +27,7 @@ def index():
         return render_template("index.html")
     return render_template("index.html")
 
-@app.route("/result.html")
+@app.route("/search")
 def result():
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     query = request.args.get("query", "쿼리 없음")
