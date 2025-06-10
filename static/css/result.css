@@ -41,11 +41,12 @@ body {
 
 /* Com.On 텍스트 */
 .logo-title {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
   white-space: nowrap;
   color: #000;
   text-decoration: none;
+  margin-top: 20px;
 }
 .logo-title:hover {
   opacity: 0.8; /* 클릭 가능한 느낌을 줌 */
@@ -338,7 +339,8 @@ body {
   }
 
   .logo-title {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
+    margin-top: 20px;
   }
 
   .navbar-title {
