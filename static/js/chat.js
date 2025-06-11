@@ -112,8 +112,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // 채팅창 토글 함수
 function toggleChat() {
-    const chatContainer = document.querySelector('.chat-container');
-    const minimizeButton = document.querySelector('.minimize-button');
-    chatContainer.classList.toggle('minimized');
-    minimizeButton.textContent = chatContainer.classList.contains('minimized') ? '+' : '−';
+  const chatContainer = document.getElementById("chat-container");
+  const toggleButton = document.getElementById("chat-toggle-button");
+
+  const isMinimized = chatContainer.classList.toggle("minimized");
+  toggleButton.style.display = isMinimized ? "block" : "none";
 }

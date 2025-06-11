@@ -37,10 +37,14 @@
   <div id="followup-search"></div>
 
   <!-- 채팅 UI -->
-  <div class="chat-container minimized">
+  <!-- 고정된 작고 둥근 버튼 -->
+  <button id="chat-toggle-button" class="chat-toggle-button" onclick="toggleChat()">🗨️ 이어서 대화</button>
+
+  <!-- 채팅 창 -->
+  <div class="chat-container minimized" id="chat-container">
     <div class="chat-header">
       <h2>이어서 대화</h2>
-      <button class="minimize-button" onclick="toggleChat()">+</button>
+      <button class="minimize-button" onclick="toggleChat()">-</button>
     </div>
     <div class="chat-messages" id="chat-messages">
       <div class="message bot">

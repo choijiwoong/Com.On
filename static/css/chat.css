@@ -1,16 +1,45 @@
+/* 채팅창 위치 및 스타일 */
 .chat-container {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    width: 80%;
-    height: 500px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    z-index: 1000;
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 480px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
 }
+
+/* 닫힌 상태 */
+.chat-container.minimized {
+  display: none;
+}
+
+/* 이어서 대화 버튼 */
+.chat-toggle-button {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  font-size: 14px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  z-index: 999;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+/* 채팅 열리면 버튼 숨김 */
+#chat-container:not(.minimized) ~ #chat-toggle-button {
+  display: none;
+}
+
 
 .chat-header {
     padding: 15px;
@@ -305,3 +334,4 @@
 .chat-container.minimized .chat-header {
     border-radius: 10px;
 }
+
