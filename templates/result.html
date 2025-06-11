@@ -7,11 +7,14 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
   <script src="{{ url_for('static', filename='js/result.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 
 </head>
 
 <body>
+  <!-- 네이게이션 바 -->
   <div class="navbar">
     <div class="navbar-left">
       <a href="/" class="navbar-logo">
@@ -26,12 +29,59 @@
     <span class="navbar-title">딥리서치 쇼핑 AI</span>
   </div>
 
-
+  <!-- 메인 콘텐츠 -->
   <p id="queryText">사용자의 조건을 불러오는 중...</p>
   <p id="queryExplanation"></p>
   <div id="product-container"></div>
   <div id="refine-question" class="follow-up"></div>
   <div id="followup-search"></div>
+
+  <!-- 채팅 UI -->
+  <div class="chat-container">
+    <div class="chat-header">
+      <h2>상품 맞춤 추천</h2>
+      <button class="minimize-button" onclick="toggleChat()">−</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="message bot">
+        <div class="message-content">
+          <p>더 정확한 추천을 위해 몇 가지 질문을 드릴게요:</p>
+          <div class="quick-questions">
+            <button onclick="sendQuickQuestion('가격대는 어느 정도가 적당하신가요?')">가격대는 어느 정도가 적당하신가요?</button>
+            <button onclick="sendQuickQuestion('주로 어떤 용도로 사용하실 예정인가요?')">주로 어떤 용도로 사용하실 예정인가요?</button>
+            <button onclick="sendQuickQuestion('특별히 선호하는 브랜드가 있으신가요?')">특별히 선호하는 브랜드가 있으신가요?</button>
+            <button onclick="sendQuickQuestion('추가로 필요한 기능이 있으신가요?')">추가로 필요한 기능이 있으신가요?</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="message-input" placeholder="원하시는 조건을 입력해주세요...">
+      <button onclick="sendMessage()">전송</button>
+    </div>
+  </div>
+
+  <div class="search-results">
+    <div class="product-container">
+        {% for product in products %}
+        <div class="product-card">
+            <img src="{{ product.image }}" alt="{{ product.title }}">
+            <div class="product-info">
+                <h3>{{ product.title }}</h3>
+                <p class="price">{{ product.price }}</p>
+                <p class="mall">{{ product.mall }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+  </div>
+
+  <div class="loading-overlay" id="loading-overlay">
+    <div style="text-align: center;">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">검색 중...</div>
+    </div>
+  </div>
   
   <!-- Google Tag Manager (noscript) -->
   <noscript>
