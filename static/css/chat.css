@@ -13,6 +13,15 @@
   z-index: 1000;
   transition: all 0.3s ease-in-out;
 }
+@media (max-width: 480px) {
+  .chat-container {
+    width: 90vw;
+    max-width: 320px;
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto; /* 혹시 우측 고정되었을 경우 대비 */
+  }
+}
 
 /* 닫힌 상태 */
 .chat-container.minimized {
