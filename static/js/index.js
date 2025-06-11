@@ -63,11 +63,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// 검색 버튼 클릭 시 결과 페이지로 이동
 function goToResult() {
   const query = document.getElementById("userQuery").value;
+  const wrapper = document.querySelector(".wrapper");
+
   if (query.trim()) {
-    window.location.href = `search?query=${encodeURIComponent(query)}`;
+    requestAnimationFrame(() => {
+      wrapper.classList.add("page-exit-up");
+      setTimeout(() => {
+        window.location.href = `search?query=${encodeURIComponent(query)}`;
+      }, 500);
+    });
   } else {
     alert("🛠️ 기능 구현 중입니다.\n아래 질문카드를 눌러 테스트해보세요!");
   }
@@ -75,13 +81,13 @@ function goToResult() {
 
 function fillExample(el) {
   const input = document.getElementById("userQuery");
-  const text = el.dataset.query;  // ✅ 실제 질문 텍스트 가져오기
+  const wrapper = document.querySelector(".wrapper");
+  const text = el.dataset.query;
   input.value = ""; // 기존 입력 초기화
 
   let index = 0;
-  const typingSpeed = 30; // 밀리초 단위 속도 (원하는 속도로 조절)
+  const typingSpeed = 30;
 
-  // 타이핑 효과 구현
   const typingInterval = setInterval(() => {
     if (index < text.length) {
       input.value += text.charAt(index);
@@ -89,11 +95,13 @@ function fillExample(el) {
     } else {
       clearInterval(typingInterval);
 
-      // 타이핑이 끝난 후 자동 검색 이동
-      setTimeout(() => {
-        window.location.href = `search?query=${encodeURIComponent(text)}`;
-      }, 250); // 살짝 여유 주기
+      // 타이핑이 끝난 후 애니메이션 → 페이지 이동
+      requestAnimationFrame(() => {
+        wrapper.classList.add("page-exit-up");
+        setTimeout(() => {
+          window.location.href = `search?query=${encodeURIComponent(text)}`;
+        }, 500);
+      });
     }
   }, typingSpeed);
 }
-

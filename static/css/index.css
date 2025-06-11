@@ -20,7 +20,6 @@ html, body {
   flex: 1; /* 남는 공간 모두 차지 */
 }
 
-
 .container {
   display: flex;
   flex-direction: column;
@@ -240,5 +239,21 @@ html, body {
 
   .example-list button {
     font-size: 1.2rem;
+  }
+}
+
+/* 페이지 퇴장 애니메이션 */
+.wrapper.page-exit-up {
+  animation: slideUpOut 0.5s ease-in-out forwards;
+}
+
+@keyframes slideUpOut {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
   }
 }
