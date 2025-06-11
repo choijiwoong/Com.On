@@ -160,7 +160,7 @@ const renderProduct = (p) => {
 	   target="_blank"
 	   data-product="${p.name}"
 	   data-link="${p.link}">
-	   🔗 상세페이지에서 자세히 보기
+	   🔗 지금 구매하기
 	</a>
 
     </div>
