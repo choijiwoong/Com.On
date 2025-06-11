@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://com-on.onrender.com/sitemap.xml

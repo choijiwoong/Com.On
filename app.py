@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, render_template, request, jsonify, make_response, send_file
 import json
 import logging
 import os
@@ -282,6 +282,17 @@ def chat():
             "is_final": False,
             "conversation_summary": "대화 요약을 생성할 수 없습니다."
         })
+
+# SEO 최적화
+# sitemap.xml
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_file('public/sitemap.xml', mimetype='application/xml')
+
+# robots.txt
+@app.route('/robots.txt')
+def robots():
+    return send_file('public/robots.txt', mimetype='text/plain')
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
