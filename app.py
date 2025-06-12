@@ -130,6 +130,9 @@ def chat():
         data = request.get_json()
         if not data:
             return jsonify({'error': '데이터가 없습니다.'}), 400
+        
+        # 쿠키 확인 및 사용자 ID 추출 (없으면 신규 생성)
+        user_id = request.cookies.get("user_id")
             
         message = data.get('message', '')
         current_query = data.get('current_query', '')
@@ -139,7 +142,7 @@ def chat():
             return jsonify({'error': '메시지가 비어있습니다.'}), 400
 
         # 사용자 메시지 로깅
-        logging.info(f"[LOG] 채팅 user {request.remote_addr} {message}")
+        # logging.info(f"[LOG] 채팅 user {request.remote_addr} {message}")
             
         # 사용자의 응답을 처리
         system_content = f"""
@@ -194,9 +197,6 @@ def chat():
             }}
             """
 
-
-
-
         try:
             messages = [
                 {"role": "system", "content": system_content}
@@ -221,7 +221,7 @@ def chat():
 
             # GPT 응답이 JSON이 아닐 때 fallback으로 감쌀 때
             if not bot_response.startswith("{"):
-                app.logger.warning(f"[LOG] 채팅 gpt {request.remote_addr} {bot_response} GPT 응답이 JSON 형식이 아님. 자동 감싸기 처리.")
+                app.logger.warning(f"[WARNING] 채팅 gpt {request.remote_addr} {bot_response} GPT 응답이 JSON 형식이 아님. 자동 감싸기 처리.")
 
                 # ✅ 최신까지의 사용자 입력을 기반으로 간단한 요약 자동 생성
                 user_messages = [msg["content"] for msg in conversation_history if msg["role"] == "user"]
@@ -234,17 +234,25 @@ def chat():
                     "final_keywords": "",
                     "conversation_summary": summary
                 }
+
+                # ✅ fallback에서도 사용자 입력/응답 로그
+                logging.info(f'[LOG] 채팅 사용자: {user_id} | 입력: "{message}" → 응답: "{bot_response}"')
+
                 return jsonify(safe_response)
 
             
             # GPT 응답 로깅
-            logging.info(f"[LOG] 채팅 gpt {request.remote_addr} {bot_response}")
+            # logging.info(f"[LOG] 채팅 gpt {request.remote_addr} {bot_response}")
 
             try:
                 response_data = json.loads(bot_response)
                 if not isinstance(response_data, dict):
                     raise ValueError("응답이 올바른 형식이 아닙니다.")
-                    
+                
+                # ✅ 사용자 대화-응답 한줄 통합 로그
+                if response_data.get("response"):
+                    logging.info(f'[LOG] 채팅 사용자: {user_id} | 입력: "{message}" → 응답: "{response_data["response"]}"')
+
                 required_fields = ["should_search", "response", "is_final", "conversation_summary"]
                 for field in required_fields:
                     if field not in response_data:
@@ -282,6 +290,32 @@ def chat():
             "is_final": False,
             "conversation_summary": "대화 요약을 생성할 수 없습니다."
         })
+
+# 이벤트 로깅
+@app.route('/log/event', methods=['POST'])
+def log_event():
+    try:
+        data = request.get_json()
+        user_id = request.cookies.get("user_id", "익명")
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        log_type = data.get("type", "event")  # 기본값은 event
+
+        # 구체적 내용 구성
+        detail_parts = []
+        for key, value in data.items():
+            if key != "type":
+                detail_parts.append(f'{key}: "{value}"')
+
+        detail_str = " | ".join(detail_parts)
+        log_msg = f'[LOG] {log_type} | 사용자: {user_id} | {detail_str}'
+
+        app.logger.info(log_msg)
+        return '', 204
+    except Exception as e:
+        app.logger.error(f"[LOG] log_event 실패: {str(e)}")
+        return jsonify({'error': '로깅 실패'}), 500
+
+
 
 # SEO 최적화
 # sitemap.xml

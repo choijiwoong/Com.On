@@ -84,6 +84,12 @@ function sendMessage() {
             검색하기
             </button>
         `;
+        logEvent({
+            type: "채팅종료",
+            entry_point: "", // 어디서 시작했는지
+            current_query: data.final_keywords, // 초기 쿼리 (있다면)
+            note: ""
+        });
         document.querySelector(".chat-messages").appendChild(searchButton);
         }
     })
@@ -97,6 +103,12 @@ function sendMessage() {
 function sendQuickQuestion(question) {
     // 화면에 AI 질문처럼 보이게 추가
     addMessage(question, "bot");
+    logEvent({
+        type: "채팅시작",
+        entry_point: "", // 어디서 시작했는지
+        current_query: question, // 초기 쿼리 (있다면)
+        note: ""
+    });
 }
 
 
