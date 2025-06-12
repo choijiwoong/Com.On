@@ -356,6 +356,12 @@ function followupSearch() {
   if (!extra) return;
 
   const newQuery = `${query} ${extra}`.trim();
+
+  logEvent({
+        type: "이어검색",
+        newQuery: extra,
+        query: query
+      });
   location.href = `/search?query=${encodeURIComponent(newQuery)}`;
 }
 
