@@ -367,8 +367,16 @@ function bindRefineOptionClick() {
       const input = document.getElementById('followupInput');
       if (!extra || !input) return;
 
+      logEvent({
+        type: "역질문 클릭",
+        selected_card: extra,
+        prev_selected_card: input.value,
+        query: query
+      });
+
       // 기존 입력 내용과 공백으로 구분하여 덧붙이기
-	  input.value = `${input.value} ${extra}`;
+	    input.value = `${input.value} ${extra}`;
+      
     });
   });
 }
