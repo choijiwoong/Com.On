@@ -13,6 +13,7 @@
 // URL 파라미터에서 'query' 값을 추출
 const params = new URLSearchParams(window.location.search);
 const query = params.get("query");
+let stopLoadingAnimation; // 상단에 선언
 
 async function getValidImageURLs(query, max = 2) {
   const validImages = [];
@@ -47,24 +48,70 @@ function validateImage(url) {
   });
 }
 
+function typeText(text, el, speed = 30) {
+  let i = 0;
+  const type = () => {
+    if (i < text.length) {
+      el.textContent += text.charAt(i++);
+      setTimeout(type, speed);
+    }
+  };
+  type();
+  startFancyLoading(); // 애니메이션 시작
+}
+
+
 // 추천 HTML을 서버에서 가져오고, 이미지 자동 교체
 const fetchFallbackFromN8N = async (questionText) => {
   const container = document.getElementById("product-container");
-  container.innerHTML = `<p class="loading-animated">🌀 맞춤형 추천을 불러오는 중</p>`;
-  startFancyLoading();
   const startTime = performance.now(); // ⏱️ 시작 시점 기록
+  const stopLoading = startFancyLoading(); // 애니메이션 정지 함수 저장
 
   try {
-    const response = await fetch('https://n8n.1000.school/webhook/c932befe-195e-46b0-8502-39c9b1c69cc2', {
+    // 인트로 추천 불러오기
+    const introResponse = await fetch('https://n8n.1000.school/webhook/get/intro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: questionText || "기본 추천 리스트 보여줘" })
+      body: JSON.stringify({ question: questionText })
     });
+    if (!introResponse.ok) throw new Error("인트로 추천 불러오기 실패");
 
-    if (!response.ok) throw new Error("네트워크 오류 발생");
+    //const introText = await introResponse.text();
+    //container.innerHTML = `<p id="queryExplanation">${introText}</p>`;
 
-    const html = await response.text();
-    container.innerHTML = `<p id="queryExplanation"></p>` + html;
+    const introText = await introResponse.text();
+    container.innerHTML = `
+      <div class="loading-animated"></div>
+      <p id="queryExplanation"></p>
+    `;
+
+    // 👇 타이핑 비동기 실행 (기다리지 않음)
+    typeText(introText, document.getElementById("queryExplanation"));
+
+    // 👇 추천 HTML은 동시에 진행
+    const productResponse = await fetch('https://n8n.1000.school/webhook/c932befe-195e-46b0-8502-39c9b1c69cc2', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: questionText })
+    });
+    if (!productResponse.ok) throw new Error("네트워크 오류 발생");
+
+    const html = await productResponse.text();
+    const loader = document.getElementById("loading-visual");
+    if (loader) loader.remove();  // 화면에서 제거
+    if (typeof stopLoading === "function") stopLoading(); // 애니메이션 타이머 정지
+    container.innerHTML += html;
+
+
+
+    // ⏱️ 끝난 후 소요 시간 계산 및 로그 전송(이미지 가격은 예정)
+    const durationMs = performance.now() - startTime;
+    const durationSec = Number((durationMs / 1000).toFixed(2)); // ⏱️ 초 단위로 변환 (예: 3.84)
+    logEvent({
+      type: "결과창 이동 완료",
+      duration_sec: durationSec,
+      query: questionText 
+    });
 
     const products = container.querySelectorAll(".product");
 
@@ -107,16 +154,6 @@ const fetchFallbackFromN8N = async (questionText) => {
 
     // ✅ 모든 업데이트 완료될 때까지 대기
     await Promise.all(updateTasks);
-
-    // ⏱️ 끝난 후 소요 시간 계산 및 로그 전송
-    const durationMs = performance.now() - startTime;
-    const durationSec = Number((durationMs / 1000).toFixed(2)); // ⏱️ 초 단위로 변환 (예: 3.84)
-    logEvent({
-      type: "결과창 이동 완료",
-      duration_sec: durationSec,
-      query: questionText 
-    });
-
   } catch (error) {
     container.innerHTML = `<p>❌ 기본 추천을 불러오지 못했어요: ${error.message}</p>`;
   }
@@ -290,31 +327,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-
 function startFancyLoading() {
   const container = document.getElementById("product-container");
   container.innerHTML = `
     <div id="loading-visual" class="loading-visual">
       <div class="doc-count">
-        📄 <span id="doc-count">0</span>개의 문서를 탐색 중입니다...
+        🛒 <span id="doc-count">0</span>개의 상품을 비교 중입니다...
       </div>
       <div class="doc-icons">
-        <span class="doc-icon">📄</span>
-        <span class="doc-icon">🗂️</span>
-        <span class="doc-icon">📁</span>
-        <span class="doc-icon">📃</span>
-        <span class="doc-icon">📄</span>
-        <span class="doc-icon">📄</span>
-        <span class="doc-icon">📄</span>
+        <span class="doc-icon">📦</span>
+        <span class="doc-icon">💳</span>
+        <span class="doc-icon">🧾</span>
+        <span class="doc-icon">📦</span>
+        <span class="doc-icon">📦</span>
+        <span class="doc-icon">🛍️</span>
+        <span class="doc-icon">📦</span>
       </div>
     </div>
+    <p id="queryExplanation" style="margin-top: 1rem;"></p>
   `;
 
   let count = 0;
   const countSpan = document.getElementById("doc-count");
   const docText = document.querySelector(".doc-count");
-
-  // 80 ~ 120 사이의 랜덤 목표값 설정
   const targetCount = Math.floor(Math.random() * 41) + 80;
 
   const interval = setInterval(() => {
@@ -324,14 +359,15 @@ function startFancyLoading() {
     if (count >= targetCount) {
       clearInterval(interval);
       countSpan.textContent = `약 ${targetCount}`;
-      docText.innerHTML = `📄 약 ${targetCount}개의 문서를 탐색했습니다.<br>잠시만 기다려주세요...`;
+      docText.innerHTML = `🛒 약 ${targetCount}개의 상품을 비교했습니다.<br>맞춤 추천을 준비 중입니다...`;
     } else {
       countSpan.textContent = count;
     }
-  }, 350);
+  }, 300);
 
   return () => clearInterval(interval);
 }
+
 
 function insertFeedbackSection() {
   const section = document.createElement("div");
