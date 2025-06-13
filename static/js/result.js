@@ -14,7 +14,7 @@
 const params = new URLSearchParams(window.location.search);
 const query = params.get("query");
 
-async function getValidImageURLs(query, max = 5) {
+async function getValidImageURLs(query, max = 2) {
   const validImages = [];
   try {
     const res = await fetch("https://n8n.1000.school/webhook/naver-image", {
@@ -52,6 +52,8 @@ const fetchFallbackFromN8N = async (questionText) => {
   const container = document.getElementById("product-container");
   container.innerHTML = `<p class="loading-animated">🌀 맞춤형 추천을 불러오는 중</p>`;
   startFancyLoading();
+  const startTime = performance.now(); // ⏱️ 시작 시점 기록
+
   try {
     const response = await fetch('https://n8n.1000.school/webhook/c932befe-195e-46b0-8502-39c9b1c69cc2', {
       method: 'POST',
@@ -64,31 +66,62 @@ const fetchFallbackFromN8N = async (questionText) => {
     const html = await response.text();
     container.innerHTML = `<p id="queryExplanation"></p>` + html;
 
-    // 썸네일 이미지 자동 교체
     const products = container.querySelectorAll(".product");
-    for (const product of products) {
-	  const title = product.querySelector("h2")?.textContent.replace("💻", "").trim();
-	  const slider = product.querySelector(".image-slider");
 
-	  if (title && slider) {
-		const images = await getValidImageURLs(title);
-		if (images.length > 0) {
-		  slider.innerHTML = `
-			${images.map((img, i) => `
-			  <img src="${img}" class="slide ${i === 0 ? 'active' : ''}" alt="${title} 이미지 ${i + 1}">
-			`).join('')}
-			${images.length > 1 ? `
-			  <button class="slider-btn prev">&#10094;</button>
-			  <button class="slider-btn next">&#10095;</button>
-			` : ''}
-		  `;
-		}
-	  }
-	}
+    // ✅ 병렬 작업 준비: 이미지 + 가격 요청을 동시에
+    const updateTasks = Array.from(products).map(async (product) => {
+      const title = product.querySelector("h2")?.textContent.replace("💻", "").trim();
+      const slider = product.querySelector(".image-slider");
+
+      if (!title || !slider) return;
+
+      // 이미지, 가격/링크 병렬 요청
+      const [images, { price, link }] = await Promise.all([
+        getValidImageURLs(title, 2),
+        fetchPriceAndLink(title)
+      ]);
+
+      // 이미지 삽입
+      if (images.length > 0) {
+        slider.innerHTML = `
+          ${images.map((img, i) => `
+            <img src="${img}" class="slide ${i === 0 ? 'active' : ''}" alt="${title} 이미지 ${i + 1}">
+          `).join('')}
+          ${images.length > 1 ? `
+            <button class="slider-btn prev">&#10094;</button>
+            <button class="slider-btn next">&#10095;</button>
+          ` : ''}
+        `;
+      }
+
+      // 가격/링크 삽입
+      const priceTag = product.querySelector(".product-info p:nth-child(2)");
+      if (priceTag) priceTag.innerHTML = `<strong>가격:</strong> ${price}`;
+
+      const buyBtn = product.querySelector(".buy-button");
+      if (buyBtn) {
+        buyBtn.setAttribute("href", link);
+        buyBtn.setAttribute("data-link", link);
+      }
+    });
+
+    // ✅ 모든 업데이트 완료될 때까지 대기
+    await Promise.all(updateTasks);
+
+    // ⏱️ 끝난 후 소요 시간 계산 및 로그 전송
+    const durationMs = performance.now() - startTime;
+    const durationSec = Number((durationMs / 1000).toFixed(2)); // ⏱️ 초 단위로 변환 (예: 3.84)
+    logEvent({
+      type: "결과창 이동 완료",
+      duration_sec: durationSec,
+      query: questionText 
+    });
+
   } catch (error) {
     container.innerHTML = `<p>❌ 기본 추천을 불러오지 못했어요: ${error.message}</p>`;
   }
 };
+
 
 function renderStars(score) {
   const fullStars = Math.floor(score);
@@ -387,3 +420,24 @@ function bindRefineOptionClick() {
   });
 }
 
+async function fetchPriceAndLink(name) {
+  try {
+    const res = await fetch('/api/get_price', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: name })
+    });
+
+    const data = await res.json();
+    return {
+      price: data.price || '정보 없음',
+      link: data.link || `https://search.shopping.naver.com/search/all?query=${encodeURIComponent(name)}`
+    };
+  } catch (err) {
+    console.error(`❌ 가격 정보 가져오기 실패 (${name}):`, err);
+    return {
+      price: '정보 없음',
+      link: `https://search.shopping.naver.com/search/all?query=${encodeURIComponent(name)}`
+    };
+  }
+}

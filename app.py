@@ -7,6 +7,7 @@ from datetime import datetime
 import uuid
 from openai import OpenAI
 from dotenv import load_dotenv
+import requests
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -116,6 +117,8 @@ if os.path.exists(".env"):
 
 # 환경변수에서 API 키 가져오기 (Render 환경에서도 동작)
 api_key = os.getenv("OPENAI_API_KEY")
+naver_api_client_id=os.getenv("NAVER_API_CLIENT_ID")
+naver_api_client_secret=os.getenv("NAVER_API_CLIENT_SECRET")
 
 # 안전성 체크
 if not api_key:
@@ -327,6 +330,44 @@ def sitemap():
 @app.route('/robots.txt')
 def robots():
     return send_file('public/robots.txt', mimetype='text/plain')
+
+
+def fetch_price_and_link(query):
+    headers = {
+        "X-Naver-Client-Id": naver_api_client_id,
+        "X-Naver-Client-Secret": naver_api_client_secret
+    }
+
+    params = {
+        "query": query,
+        "display": 1,  # 1개만 조회
+        "sort": "sim"  # 유사도순
+    }
+
+    res = requests.get("https://openapi.naver.com/v1/search/shop.json", headers=headers, params=params)
+
+    if res.status_code == 200:
+        data = res.json()
+        if data["items"]:
+            item = data["items"][0]
+            price = f"{int(item['lprice']):,}원"
+            link = item["link"]  #  제품 링크
+            return price, link
+    
+    return "정보 없음", ""
+
+
+@app.route('/api/get_price', methods=['POST'])
+def get_price():
+    data = request.get_json()
+    query = data.get('question', '')
+    
+    price, link = fetch_price_and_link(query)
+    
+    return jsonify({
+        "price": price,
+        "link": link
+    })
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
