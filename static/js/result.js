@@ -68,39 +68,40 @@ const fetchFallbackFromN8N = async (questionText) => {
   const stopLoading = startFancyLoading(); // 애니메이션 정지 함수 저장
 
   try {
-    // 인트로 추천 불러오기
-    const introResponse = await fetch('https://n8n.1000.school/webhook/get/intro', {
+    // 1. 요청을 병렬로 시작
+    const introPromise = fetch('https://n8n.1000.school/webhook/get/intro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: questionText })
+    }).then(res => {
+      if (!res.ok) throw new Error("인트로 추천 불러오기 실패");
+      return res.text();
     });
-    if (!introResponse.ok) throw new Error("인트로 추천 불러오기 실패");
 
-    //const introText = await introResponse.text();
-    //container.innerHTML = `<p id="queryExplanation">${introText}</p>`;
-
-    const introText = await introResponse.text();
-    container.innerHTML = `
-      <div class="loading-animated"></div>
-      <p id="queryExplanation"></p>
-    `;
-
-    // 👇 타이핑 비동기 실행 (기다리지 않음)
-    typeText(introText, document.getElementById("queryExplanation"));
-
-    // 👇 추천 HTML은 동시에 진행
-    const productResponse = await fetch('https://n8n.1000.school/webhook/c932befe-195e-46b0-8502-39c9b1c69cc2', {
+    const productPromise = fetch('https://n8n.1000.school/webhook/c932befe-195e-46b0-8502-39c9b1c69cc2', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: questionText })
+    }).then(res => {
+      if (!res.ok) throw new Error("네트워크 오류 발생");
+      return res.text();
     });
-    if (!productResponse.ok) throw new Error("네트워크 오류 발생");
 
-    const html = await productResponse.text();
+    // 2. UI 초기화 (로딩 + 타이핑 영역)
+    startFancyLoading();
+
+    // 3. intro 텍스트 도착 → 타이핑
+    introPromise.then(introText => {
+      typeText(introText, document.getElementById("queryExplanation"));
+    });
+
+    // 4. 제품 카드 도착 → 로딩 제거 + HTML 추가
+    const html = await productPromise;
     const loader = document.getElementById("loading-visual");
-    if (loader) loader.remove();  // 화면에서 제거
-    if (typeof stopLoading === "function") stopLoading(); // 애니메이션 타이머 정지
+    if (loader) loader.remove();
+    if (typeof stopLoading === "function") stopLoading();
     container.innerHTML += html;
+
 
 
 
