@@ -22,11 +22,26 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)
 
+# =======================
+# 🔐 환경 변수 및 API 키 로드
+# =======================
+if os.path.exists(".env"):
+    load_dotenv()
+
+api_key = os.getenv("OPENAI_API_KEY")
+naver_api_client_id = os.getenv("NAVER_API_CLIENT_ID")
+naver_api_client_secret = os.getenv("NAVER_API_CLIENT_SECRET")
+slack_api_key=os.getenv("SLACK_API_TOKEN")
+
+if not api_key:
+    raise EnvironmentError("❌ OPENAI_API_KEY가 설정되지 않았습니다!")
+client = OpenAI(api_key=api_key)
+
+
 # 슬랙 알림 설정
 def send_slack_alert(message):
-    webhook_url = 'https://hooks.slack.com/services/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'
     payload = {"text": message}
-    requests.post(webhook_url, json=payload)
+    requests.post(slack_api_key, json=payload)
 
 # =======================
 # 🏠 루트 페이지 (index)
@@ -114,21 +129,6 @@ def page_not_found(e):
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     app.logger.info(f"[LOG] ERROR 404 {now} | {request.url} | 사용자: {user_id}")
     return render_template("404.html"), 404
-
-# =======================
-# 🔐 환경 변수 및 API 키 로드
-# =======================
-if os.path.exists(".env"):
-    load_dotenv()
-
-api_key = os.getenv("OPENAI_API_KEY")
-naver_api_client_id = os.getenv("NAVER_API_CLIENT_ID")
-naver_api_client_secret = os.getenv("NAVER_API_CLIENT_SECRET")
-
-if not api_key:
-    raise EnvironmentError("❌ OPENAI_API_KEY가 설정되지 않았습니다!")
-
-client = OpenAI(api_key=api_key)
 
 # =======================
 # 🤖 GPT 응답 핸들링
