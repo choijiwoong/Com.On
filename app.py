@@ -24,7 +24,7 @@ log.setLevel(logging.INFO)
 
 # 슬랙 알림 설정
 def send_slack_alert(message):
-    webhook_url = 'https://hooks.slack.com/services/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'
+    webhook_url = 'https://hooks.slack.com/services/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'
     payload = {"text": message}
     requests.post(webhook_url, json=payload)
 
