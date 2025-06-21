@@ -18,9 +18,15 @@ import requests
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # 🔧 로깅 설정
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)    
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)
+
+# 슬랙 알림 설정
+def send_slack_alert(message):
+    webhook_url = 'https://hooks.slack.com/services/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'
+    payload = {"text": message}
+    requests.post(webhook_url, json=payload)
 
 # =======================
 # 🏠 루트 페이지 (index)
@@ -54,7 +60,7 @@ def result():
         new_user = True
 
     app.logger.info(f"{now} [LOG] 결과창 이동 | query = {query} | 사용자: {user_id}")
-
+    send_slack_alert(f"/search {query}")
     response = make_response(render_template("result.html"))
     if new_user:
         response.set_cookie("user_id", user_id, max_age=60 * 60 * 24 * 30)
