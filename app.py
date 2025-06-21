@@ -203,9 +203,9 @@ def chat():
 
         # ✅ GPT 호출
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o-mini",
             messages=messages,
-            temperature=0.7,
+            temperature=0.1,
             max_tokens=300,
             timeout=10
         )

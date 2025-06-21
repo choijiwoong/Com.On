@@ -88,7 +88,7 @@ http://localhost:5000
 | `/api/questions` | 질의 샘플 리스트(JSON) |
 | `/api/products` | 추천 제품 결과(JSON, 없을 경우 n8n Webhook 통해 동적 생성) |
 | `/api/get_price` | 네이버 API로 가격/링크 조회 |
-| `/chat` | 대화형 추천 응답 처리 (GPT-4 연동) |
+| `/chat` | 대화형 추천 응답 처리 (GPT-4o-mini 연동) |
 | `/log/click` | 제품 클릭 이벤트 로깅 |
 | `/log/event` | 일반 이벤트 로깅 |
 | `/robots.txt`, `/sitemap.xml` | SEO 대응 |
@@ -101,7 +101,7 @@ http://localhost:5000
 - [ ] 관리자용 대시보드 (조회수, 클릭률, 전환률)
 - [ ] 실시간 트렌드 분석 기반 추천
 - [ ] Whisper 기반 음성 질의 추천
-- [ ] GPT-4o 도입 (멀티모달 응답 포함)
+- [ ] GPT-4o-mini 도입 (멀티모달 응답 포함)
 - [ ] 파트너 제휴 링크 시스템 고도화
 
 ---
