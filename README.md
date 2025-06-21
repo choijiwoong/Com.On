@@ -108,7 +108,7 @@ http://localhost:5000
 
 ## 👨‍💻 제작 팀
 
-**Team GRIT**
+**[Team GRIT](https://github.com/choijiwoong/GRIT)**
 - 최지웅 (기획, 백엔드, GPT 파인튜닝)
 - 안성환 (시장조사, 프론트 UI, 사용자 인터뷰)
 
