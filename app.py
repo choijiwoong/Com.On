@@ -1,3 +1,6 @@
+# =======================
+# 📦 필수 모듈 임포트
+# =======================
 from flask import Flask, render_template, request, jsonify, make_response, send_file
 import json
 import logging
@@ -9,85 +12,82 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import requests
 
+# =======================
+# 🚀 앱 초기화 및 설정
+# =======================
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
-# 로깅 설정
+# 🔧 로깅 설정
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('werkzeug')
-log.setLevel(logging.INFO)  # ERROR CRITICAL WARNING INFO
-	
+log.setLevel(logging.INFO)
+
+# =======================
+# 🏠 루트 페이지 (index)
+# =======================
 @app.route("/")
 def index():
     user_id = request.cookies.get("user_id")
     if not user_id:
         user_id = str(uuid.uuid4())  # 고유 사용자 ID 생성
         response = make_response(render_template("index.html"))
-        response.set_cookie("user_id", user_id, max_age=60*60*24*30)  # 30일간 유지
+        response.set_cookie("user_id", user_id, max_age=60*60*24*30)  # 30일 유지
         app.logger.info(f"[LOG] 신규 사용자 방문 | ID: {user_id}")
         return response
     else:
         app.logger.info(f"[LOG] 기존 사용자 방문 | ID: {user_id}")
         return render_template("index.html")
-    return render_template("index.html")
 
+# =======================
+# 🔍 검색 결과 페이지
+# =======================
 @app.route("/search")
 def result():
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     query = request.args.get("query", "쿼리 없음")
 
-    # 쿠키 확인 및 사용자 ID 추출 (없으면 신규 생성)
+    # 쿠키 확인 및 사용자 ID 생성
     user_id = request.cookies.get("user_id")
     new_user = False
     if not user_id:
         user_id = str(uuid.uuid4())
         new_user = True
 
-    # 로그 출력
-    log_msg = f"{now} [LOG] 결과창 이동 | query = {query} | 사용자: {user_id}"
-    app.logger.info(log_msg)
+    app.logger.info(f"{now} [LOG] 결과창 이동 | query = {query} | 사용자: {user_id}")
 
-    # 결과 페이지 렌더링 및 쿠키 설정
     response = make_response(render_template("result.html"))
     if new_user:
-        response.set_cookie("user_id", user_id, max_age=60 * 60 * 24 * 30)  # 30일
-
+        response.set_cookie("user_id", user_id, max_age=60 * 60 * 24 * 30)
     return response
 
+# =======================
+# 📄 질문 리스트 API
+# =======================
 @app.route("/api/questions")
 def api_questions():
-    with open(os.path.join(app.static_folder, "questions.json"), encoding="utf-8") as f:
+    with open(os.path.join(app.static_folder, "data-json/questions.json"), encoding="utf-8") as f:
         return jsonify(json.load(f))
 
+# =======================
+# 🔐 서버 Keep-Alive
+# =======================
 @app.route("/api/keep-alive")
 def receive_ping():
     return "true"
 
+# =======================
+# 🛍️ 상품 추천 API
+# =======================
 @app.route("/api/products")
 def api_products():
     query = request.args.get("query", "")
-    with open(os.path.join(app.static_folder, "products.json"), encoding="utf-8") as f:
+    with open(os.path.join(app.static_folder, "data-json/products.json"), encoding="utf-8") as f:
         data = json.load(f)
     return jsonify(data.get(query, []))
-    
-# ✅ 추가: 실시간 구글 쇼핑 검색 API(상세페이지)
-@app.route("/api/google_search")
-def api_google_search():
-    user_query = request.args.get("query", "")
-    if not user_query:
-        return jsonify({"error": "검색어가 없습니다."}), 400
 
-    full_query = (
-        f"{user_query} site:coupang.com/vp/products/ "
-        f"OR site:smartstore.naver.com "
-        f"OR site:shopping.naver.com"
-    )
-
-    try:
-        urls = search(full_query, lang="ko", stop=5)
-        return jsonify({"results": list(urls)})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-        
+# =======================
+# 🖱️ 클릭 로깅
+# =======================
 @app.route('/log/click', methods=['POST'])
 def log_click():
     data = request.get_json()
@@ -96,58 +96,53 @@ def log_click():
     user_id = request.cookies.get("user_id", "익명")
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    log_msg = f"[LOG] 상세클릭 {now} | {product_name}  | {query} | 사용자: {user_id}"
-    app.logger.info(log_msg)
-
+    app.logger.info(f"[LOG] 상세클릭 {now} | {product_name}  | {query} | 사용자: {user_id}")
     return '', 200
-    
+
+# =======================
+# ❌ 404 에러 핸들러
+# =======================
 @app.errorhandler(404)
 def page_not_found(e):
     user_id = request.cookies.get("user_id", "익명")
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    url = request.url  # 🔹 여기가 핵심
-    log_msg = f"[LOG] ERROR 404 {now} | {url} | 사용자: {user_id}"
-    app.logger.info(log_msg)
-
+    app.logger.info(f"[LOG] ERROR 404 {now} | {request.url} | 사용자: {user_id}")
     return render_template("404.html"), 404
 
-# .env가 존재하면 로드 (로컬에서만 작동)
+# =======================
+# 🔐 환경 변수 및 API 키 로드
+# =======================
 if os.path.exists(".env"):
     load_dotenv()
 
-# 환경변수에서 API 키 가져오기 (Render 환경에서도 동작)
 api_key = os.getenv("OPENAI_API_KEY")
-naver_api_client_id=os.getenv("NAVER_API_CLIENT_ID")
-naver_api_client_secret=os.getenv("NAVER_API_CLIENT_SECRET")
+naver_api_client_id = os.getenv("NAVER_API_CLIENT_ID")
+naver_api_client_secret = os.getenv("NAVER_API_CLIENT_SECRET")
 
-# 안전성 체크
 if not api_key:
     raise EnvironmentError("❌ OPENAI_API_KEY가 설정되지 않았습니다!")
 
-# OpenAI 클라이언트 초기화
 client = OpenAI(api_key=api_key)
 
+# =======================
+# 🤖 GPT 응답 핸들링
+# =======================
 @app.route('/chat', methods=['POST'])
 def chat():
     try:
         data = request.get_json()
         if not data:
             return jsonify({'error': '데이터가 없습니다.'}), 400
-        
-        # 쿠키 확인 및 사용자 ID 추출 (없으면 신규 생성)
+
         user_id = request.cookies.get("user_id")
-            
         message = data.get('message', '')
         current_query = data.get('current_query', '')
         conversation_history = data.get('conversation_history', [])
-        
+
         if not message:
             return jsonify({'error': '메시지가 비어있습니다.'}), 400
 
-        # 사용자 메시지 로깅
-        # logging.info(f"[LOG] 채팅 user {request.remote_addr} {message}")
-            
-        # 사용자의 응답을 처리
+        # ✅ 시스템 메시지 구성
         system_content = f"""
             당신은 제품 추천 시스템의 핵심 응답 생성자입니다.  
             ❗당신이 생성하는 응답이 시스템 전체 작동에 영향을 주며, 규칙을 지키지 않으면 사용자에게 오류 메시지가 표시됩니다.  
@@ -199,94 +194,53 @@ def chat():
                 "conversation_summary": "가격대 - 3만원대, 용도 - 운동용"
             }}
             """
+        
+        # ✅ 대화 메시지 구성
+        messages = [{"role": "system", "content": system_content}]
+        for msg in conversation_history:
+            messages.append(msg)
+        messages.append({"role": "user", "content": message})
 
-        try:
-            messages = [
-                {"role": "system", "content": system_content}
-            ]
-            
-            # 이전 대화 내용 추가
-            for msg in conversation_history:
-                messages.append(msg)
-                
-            # 현재 메시지 추가
-            messages.append({"role": "user", "content": message})
+        # ✅ GPT 호출
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=messages,
+            temperature=0.7,
+            max_tokens=300,
+            timeout=10
+        )
 
-            response = client.chat.completions.create(
-                model="gpt-4",
-                messages=messages,
-                temperature=0.7,
-                max_tokens=300,
-                timeout=10
-            )
+        bot_response = response.choices[0].message.content
 
-            bot_response = response.choices[0].message.content
-
-            # GPT 응답이 JSON이 아닐 때 fallback으로 감쌀 때
-            if not bot_response.startswith("{"):
-                app.logger.warning(f"[WARNING] 채팅 gpt {request.remote_addr} {bot_response} GPT 응답이 JSON 형식이 아님. 자동 감싸기 처리.")
-
-                # ✅ 최신까지의 사용자 입력을 기반으로 간단한 요약 자동 생성
-                user_messages = [msg["content"] for msg in conversation_history if msg["role"] == "user"]
-                summary = " / ".join(user_messages[-3:]) if user_messages else "요구사항 요약 실패"
-
-                safe_response = {
-                    "should_search": False,
-                    "response": bot_response,
-                    "is_final": False,
-                    "final_keywords": "",
-                    "conversation_summary": summary
-                }
-
-                # ✅ fallback에서도 사용자 입력/응답 로그
-                logging.info(f'[LOG] 채팅 사용자: {user_id} | 입력: "{message}" → 응답: "{bot_response}"')
-
-                return jsonify(safe_response)
-
-            
-            # GPT 응답 로깅
-            # logging.info(f"[LOG] 채팅 gpt {request.remote_addr} {bot_response}")
-
-            try:
-                response_data = json.loads(bot_response)
-                if not isinstance(response_data, dict):
-                    raise ValueError("응답이 올바른 형식이 아닙니다.")
-                
-                # ✅ 사용자 대화-응답 한줄 통합 로그
-                if response_data.get("response"):
-                    logging.info(f'[LOG] 채팅 사용자: {user_id} | 입력: "{message}" → 응답: "{response_data["response"]}"')
-
-                required_fields = ["should_search", "response", "is_final", "conversation_summary"]
-                for field in required_fields:
-                    if field not in response_data:
-                        raise ValueError(f"필수 필드 '{field}'가 없습니다.")
-                        
-                if response_data["is_final"] and "final_keywords" not in response_data:
-                    raise ValueError("최종 응답에는 final_keywords가 필요합니다.")
-                        
-                return jsonify(response_data)
-                
-            except json.JSONDecodeError as e:
-                app.logger.error(f"JSON 파싱 오류: {str(e)}")
-                app.logger.error(f"실패한 GPT 응답:\n{bot_response}")
-                return jsonify({
-                    "should_search": False,
-                    "response": bot_response,
-                    "is_final": False,
-                    "conversation_summary": "대화 요약을 생성할 수 없습니다."
-                })
-                
-        except Exception as e:
-            app.logger.error(f"GPT 응답 처리 중 오류: {str(e)}")
+        # ✅ JSON 응답 검사 및 fallback 처리
+        if not bot_response.startswith("{"):
+            summary = " / ".join([msg["content"] for msg in conversation_history if msg["role"] == "user"][-3:]) or "요구사항 요약 실패"
+            app.logger.warning(f"[WARNING] GPT 응답이 JSON 아님. fallback 적용.")
+            logging.info(f'[LOG] 채팅 사용자: {user_id} | 입력: "{message}" → 응답: "{bot_response}"')
             return jsonify({
                 "should_search": False,
-                "response": "죄송합니다. 잠시 후 다시 시도해주세요.",
+                "response": bot_response,
                 "is_final": False,
-                "conversation_summary": "대화 요약을 생성할 수 없습니다."
+                "final_keywords": "",
+                "conversation_summary": summary
             })
-            
+
+        # ✅ 정상 JSON 응답 처리
+        response_data = json.loads(bot_response)
+        if not isinstance(response_data, dict):
+            raise ValueError("응답이 올바른 형식이 아닙니다.")
+
+        for field in ["should_search", "response", "is_final", "conversation_summary"]:
+            if field not in response_data:
+                raise ValueError(f"필수 필드 '{field}'가 없습니다.")
+        if response_data["is_final"] and "final_keywords" not in response_data:
+            raise ValueError("최종 응답에는 final_keywords가 필요합니다.")
+
+        logging.info(f'[LOG] 채팅 사용자: {user_id} | 입력: "{message}" → 응답: "{response_data["response"]}"')
+        return jsonify(response_data)
+
     except Exception as e:
-        app.logger.error(f"채팅 처리 중 오류 발생: {str(e)}")
+        app.logger.error(f"GPT 응답 처리 중 오류: {str(e)}")
         return jsonify({
             "should_search": False,
             "response": "죄송합니다. 잠시 후 다시 시도해주세요.",
@@ -294,22 +248,18 @@ def chat():
             "conversation_summary": "대화 요약을 생성할 수 없습니다."
         })
 
-# 이벤트 로깅
+# =======================
+# 🧭 사용자 이벤트 로깅
+# =======================
 @app.route('/log/event', methods=['POST'])
 def log_event():
     try:
         data = request.get_json()
         user_id = request.cookies.get("user_id", "익명")
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        log_type = data.get("type", "event")  # 기본값은 event
+        log_type = data.get("type", "event")
 
-        # 구체적 내용 구성
-        detail_parts = []
-        for key, value in data.items():
-            if key != "type":
-                detail_parts.append(f'{key}: "{value}"')
-
-        detail_str = " | ".join(detail_parts)
+        detail_str = " | ".join([f'{k}: "{v}"' for k, v in data.items() if k != "type"])
         log_msg = f'[LOG] {log_type} | 사용자: {user_id} | {detail_str}'
 
         app.logger.info(log_msg)
@@ -318,30 +268,29 @@ def log_event():
         app.logger.error(f"[LOG] log_event 실패: {str(e)}")
         return jsonify({'error': '로깅 실패'}), 500
 
-
-
-# SEO 최적화
-# sitemap.xml
+# =======================
+# 🧭 SEO 관련 라우터
+# =======================
 @app.route('/sitemap.xml')
 def sitemap():
     return send_file('public/sitemap.xml', mimetype='application/xml')
 
-# robots.txt
 @app.route('/robots.txt')
 def robots():
     return send_file('public/robots.txt', mimetype='text/plain')
 
-
+# =======================
+# 💰 네이버 쇼핑 API - 가격 크롤링
+# =======================
 def fetch_price_and_link(query):
     headers = {
         "X-Naver-Client-Id": naver_api_client_id,
         "X-Naver-Client-Secret": naver_api_client_secret
     }
-
     params = {
         "query": query,
-        "display": 1,  # 1개만 조회
-        "sort": "sim"  # 유사도순
+        "display": 1,
+        "sort": "sim"
     }
 
     res = requests.get("https://openapi.naver.com/v1/search/shop.json", headers=headers, params=params)
@@ -350,26 +299,19 @@ def fetch_price_and_link(query):
         data = res.json()
         if data["items"]:
             item = data["items"][0]
-            price = f"{int(item['lprice']):,}원"
-            link = item["link"]  #  제품 링크
-            return price, link
-    
+            return f"{int(item['lprice']):,}원", item["link"]
     return "정보 없음", ""
-
 
 @app.route('/api/get_price', methods=['POST'])
 def get_price():
     data = request.get_json()
     query = data.get('question', '')
-    
     price, link = fetch_price_and_link(query)
-    
-    return jsonify({
-        "price": price,
-        "link": link
-    })
+    return jsonify({"price": price, "link": link})
 
+# =======================
+# 🚪 앱 실행
+# =======================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-

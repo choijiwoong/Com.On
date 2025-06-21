@@ -1,9 +1,14 @@
+/* ==============================
+  🎨 글로벌 색상 변수
+============================== */
 :root {
-  --main-color: #4a90e2;
-  --hover-color: #357ABD;
+  --main-color: #4a90e2;     /* 기본 테마 색상 */
+  --hover-color: #357ABD;    /* hover 시 강조 색상 */
 }
 
-/* 스타일에 추가 */
+/* ==============================
+  🔧 기본 HTML 구조 설정
+============================== */
 html, body {
   height: 100%;
   margin: 0;
@@ -11,16 +16,13 @@ html, body {
 }
 
 .wrapper {
-  min-height: 100vh; /* 화면 전체 높이 확보 */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 .container {
-  flex: 1; /* 남는 공간 모두 차지 */
-}
-
-.container {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,6 +33,9 @@ html, body {
   box-sizing: border-box;
 }
 
+/* ==============================
+  🪧 로고 및 타이틀 영역
+============================== */
 .logo-title {
   display: flex;
   align-items: center;
@@ -61,7 +66,9 @@ html, body {
   text-align: center;
 }
 
-/* 검색창 컨테이너 */
+/* ==============================
+  🔍 검색창 영역
+============================== */
 .search-box {
   display: flex;
   max-width: 600px;
@@ -76,12 +83,11 @@ html, body {
   box-sizing: border-box;
 }
 
-/* 검색창 포커스 시 그림자 강조 */
+/* 포커스 시 강조 효과 */
 .search-box:focus-within {
   box-shadow: 0 6px 16px rgba(0,0,0,0.1);
 }
 
-/* 검색 입력창 */
 .search-box input {
   flex: 1 1 auto;
   border: none;
@@ -93,7 +99,6 @@ html, body {
   min-width: 0;
 }
 
-/* 검색 버튼 */
 .search-box button {
   background: var(--main-color);
   color: #fff;
@@ -109,6 +114,9 @@ html, body {
   background: var(--hover-color);
 }
 
+/* ==============================
+  💡 예시 질문 영역
+============================== */
 .examples {
   position: relative;
   text-align: center;
@@ -119,14 +127,8 @@ html, body {
   font-size: 1.2rem;
   font-weight: 500;
   margin-bottom: 12px;
-  height: 1.5em; /* 고정 높이 부여 (폰트 크기 기준) */
+  height: 1.5em;
   color: #2563eb;
-}
-/* 반응형 모바일 대응 */
-@media (max-width: 768px) {
-  .examples-title {
-    font-size: 1rem; /* 또는 0.9rem로 더 작게 */
-  }
 }
 
 .example-list {
@@ -141,30 +143,29 @@ html, body {
   width: 100%;
   max-width: 600px;
   min-width: 300px;
-
   padding: 12px 16px;
   font-size: 1.2rem;
   border-radius: 12px;
   border: none;
-  background-color: transparent;       /* 배경 제거 */
-  color: #000000;                      /* 푸른 계열 글자색 */
+  background-color: transparent;
+  color: #000;
   cursor: pointer;
   text-align: center;
-
   white-space: normal;
   overflow-wrap: break-word;
   word-break: keep-all;
   line-height: 1.5;
-
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .example-list button:hover {
-  color: #1e40af;                     /* hover 시 더 진한 파랑 */
+  color: #1e40af;
   transform: translateY(-1px);
 }
 
-/* 애니메이션 키프레임 */
+/* ==============================
+  🧊 진입/퇴장 애니메이션
+============================== */
 @keyframes slideInFromTop {
   0% {
     opacity: 0;
@@ -187,7 +188,6 @@ html, body {
   }
 }
 
-/* 애니메이션 클래스 */
 .fade-slide-in {
   animation: slideInFromTop 0.6s ease forwards;
 }
@@ -196,7 +196,9 @@ html, body {
   animation: slideOutToBottom 0.6s ease forwards;
 }
 
-/* 모바일 최적화 */
+/* ==============================
+  📱 모바일 최적화
+============================== */
 @media (max-width: 768px) {
   .container {
     padding: 24px 12px;
@@ -237,12 +239,18 @@ html, body {
     padding: 0;
   }
 
+  .examples-title {
+    font-size: 1rem;
+  }
+
   .example-list button {
     font-size: 1.2rem;
   }
 }
 
-/* 페이지 퇴장 애니메이션 */
+/* ==============================
+  🧹 페이지 퇴장 시 슬라이드 업
+============================== */
 .wrapper.page-exit-up {
   animation: slideUpOut 0.5s ease-in-out forwards;
 }

@@ -1,20 +1,29 @@
-// Google Tag Manager 삽입
+// ==============================
+// 📦 Google Tag Manager 삽입
+// ==============================
 (function (w, d, s, l, i) {
   w[l] = w[l] || [];
   w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
   var f = d.getElementsByTagName(s)[0],
-    j = d.createElement(s),
-    dl = l != 'dataLayer' ? '&l=' + l : '';
+      j = d.createElement(s),
+      dl = l != 'dataLayer' ? '&l=' + l : '';
   j.async = true;
   j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
   f.parentNode.insertBefore(j, f);
 })(window, document, 'script', 'dataLayer', 'GTM-MZHQSKG5');
 
-// URL 파라미터에서 'query' 값을 추출
+
+// ==============================
+// 🔍 URL 파라미터에서 'query' 추출
+// ==============================
 const params = new URLSearchParams(window.location.search);
 const query = params.get("query");
-let stopLoadingAnimation; // 상단에 선언
+let stopLoadingAnimation; // 로딩 애니메이션 종료 함수 보관용
 
+
+// ==============================
+// 🖼️ 이미지 유효성 검사 및 선택
+// ==============================
 async function getValidImageURLs(query, max = 2) {
   const validImages = [];
   try {
@@ -24,11 +33,13 @@ async function getValidImageURLs(query, max = 2) {
       body: JSON.stringify({ query })
     });
     const items = await res.json();
+
+    // 썸네일 이미지가 실제 표시 가능한 경우만 필터링
     for (const item of items) {
       const isValid = await validateImage(item.thumbnail);
       if (isValid) {
         validImages.push(item.thumbnail);
-        if (validImages.length >= max) break;
+        if (validImages.length >= max) break; // 최대 개수 도달 시 중단
       }
     }
   } catch (err) {
@@ -37,8 +48,7 @@ async function getValidImageURLs(query, max = 2) {
   return validImages;
 }
 
-
-// 이미지 URL이 실제로 표시 가능한지 검사
+// 이미지 주소가 실제로 로딩 가능한지 확인
 function validateImage(url) {
   return new Promise((resolve) => {
     const img = new Image();
@@ -48,6 +58,10 @@ function validateImage(url) {
   });
 }
 
+
+// ==============================
+// ⌨️ 텍스트 타이핑 애니메이션
+// ==============================
 function typeText(text, el, speed = 30) {
   let i = 0;
   const type = () => {
@@ -57,18 +71,20 @@ function typeText(text, el, speed = 30) {
     }
   };
   type();
-  startFancyLoading(); // 애니메이션 시작
+  startFancyLoading(); // 로딩 애니메이션 시작
 }
 
 
-// 추천 HTML을 서버에서 가져오고, 이미지 자동 교체
+// ==============================
+// 🔁 추천 HTML을 n8n에서 불러와 렌더링
+// ==============================
 const fetchFallbackFromN8N = async (questionText) => {
   const container = document.getElementById("product-container");
-  const startTime = performance.now(); // ⏱️ 시작 시점 기록
-  const stopLoading = startFancyLoading(); // 애니메이션 정지 함수 저장
+  const startTime = performance.now(); // 시간 측정 시작
+  const stopLoading = startFancyLoading(); // 로딩 애니메이션 실행
 
   try {
-    // 1. 요청을 병렬로 시작
+    // 1. 인트로 텍스트와 제품 HTML 요청 병렬 처리
     const introPromise = fetch('https://n8n.1000.school/webhook/get/intro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -87,43 +103,37 @@ const fetchFallbackFromN8N = async (questionText) => {
       return res.text();
     });
 
-    // 2. UI 초기화 (로딩 + 타이핑 영역)
+    // 2. UI 초기화
     startFancyLoading();
 
-    // 3. intro 텍스트 도착 → 타이핑
+    // 3. 인트로 텍스트 도착 → 타이핑 표시
     introPromise.then(introText => {
       typeText(introText, document.getElementById("queryExplanation"));
     });
 
-    // 4. 제품 카드 도착 → 로딩 제거 + HTML 추가
+    // 4. 제품 HTML 도착 → DOM 삽입
     const html = await productPromise;
     const loader = document.getElementById("loading-visual");
     if (loader) loader.remove();
     if (typeof stopLoading === "function") stopLoading();
     container.innerHTML += html;
 
-
-
-
-    // ⏱️ 끝난 후 소요 시간 계산 및 로그 전송(이미지 가격은 예정)
-    const durationMs = performance.now() - startTime;
-    const durationSec = Number((durationMs / 1000).toFixed(2)); // ⏱️ 초 단위로 변환 (예: 3.84)
+    // 5. 소요 시간 기록 및 전송
+    const durationSec = Number(((performance.now() - startTime) / 1000).toFixed(2));
     logEvent({
       type: "결과창 이동 완료",
       duration_sec: durationSec,
       query: questionText 
     });
 
+    // 6. 각 제품에 이미지와 가격/링크 비동기 삽입
     const products = container.querySelectorAll(".product");
-
-    // ✅ 병렬 작업 준비: 이미지 + 가격 요청을 동시에
     const updateTasks = Array.from(products).map(async (product) => {
       const title = product.querySelector("h2")?.textContent.replace("💻", "").trim();
       const slider = product.querySelector(".image-slider");
 
       if (!title || !slider) return;
 
-      // 이미지, 가격/링크 병렬 요청
       const [images, { price, link }] = await Promise.all([
         getValidImageURLs(title, 2),
         fetchPriceAndLink(title)
@@ -142,10 +152,11 @@ const fetchFallbackFromN8N = async (questionText) => {
         `;
       }
 
-      // 가격/링크 삽입
+      // 가격 정보 삽입
       const priceTag = product.querySelector(".product-info p:nth-child(2)");
       if (priceTag) priceTag.innerHTML = `<strong>가격:</strong> ${price}`;
 
+      // 구매 버튼 링크 삽입
       const buyBtn = product.querySelector(".buy-button");
       if (buyBtn) {
         buyBtn.setAttribute("href", link);
@@ -153,60 +164,59 @@ const fetchFallbackFromN8N = async (questionText) => {
       }
     });
 
-    // ✅ 모든 업데이트 완료될 때까지 대기
-    await Promise.all(updateTasks);
+    await Promise.all(updateTasks); // 모든 삽입 작업 완료까지 대기
   } catch (error) {
     container.innerHTML = `<p>❌ 기본 추천을 불러오지 못했어요: ${error.message}</p>`;
   }
 };
 
 
+// ==============================
+// ⭐ 별점 표시 유틸
+// ==============================
 function renderStars(score) {
   const fullStars = Math.floor(score);
   const hasHalfStar = score - fullStars >= 0.25 && score - fullStars < 0.75;
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
   let starsHTML = '';
-
-  for (let i = 0; i < fullStars; i++) {
-    starsHTML += '★';
-  }
-
-  if (hasHalfStar) {
-    starsHTML += '☆'; // 또는 다른 반 별 문자 사용 
-  }
-
-  for (let i = 0; i < emptyStars; i++) {
-    starsHTML += '☆';
-  }
+  for (let i = 0; i < fullStars; i++) starsHTML += '★';
+  if (hasHalfStar) starsHTML += '☆';  // 반 별 처리
+  for (let i = 0; i < emptyStars; i++) starsHTML += '☆';
 
   return starsHTML;
 }
 
-function trackProductClick(productName, productLink, query_) {
-    fetch('/log/click', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        product_name: productName,
-        product_link: productLink,
-        product_query: query_,// query_
-        timestamp: new Date().toISOString()
-      })
-    }).catch(err => console.error('❌ 로그 전송 실패:', err));
-  }
 
-// 추천 상품 HTML 블록을 문자열로 생성
+// ==============================
+// 🧾 클릭 로그 전송
+// ==============================
+function trackProductClick(productName, productLink, query_) {
+  fetch('/log/click', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      product_name: productName,
+      product_link: productLink,
+      product_query: query_,
+      timestamp: new Date().toISOString()
+    })
+  }).catch(err => console.error('❌ 로그 전송 실패:', err));
+}
+
+
+// ==============================
+// 🧱 추천 카드 HTML 생성기
+// ==============================
 const renderProduct = (p) => {
-  const images = p.images || [p.image];
+  const images = p.images || [p.image]; // 이미지가 여러 개인 경우 슬라이더 구성
+
   return `
     <div class="product">
       <div class="product-header">
         <div class="image-slider">
           ${images.map((img, i) => `
-            <img src="${img}" class="slide ${i === 0 ? 'active' : ''}" alt="${p.name} 이미지 ${i+1}">
+            <img src="${img}" class="slide ${i === 0 ? 'active' : ''}" alt="${p.name} 이미지 ${i + 1}">
           `).join('')}
           ${images.length > 1 ? `
             <button class="slider-btn prev">&#10094;</button>
@@ -226,28 +236,28 @@ const renderProduct = (p) => {
         </div>
       </div>
       <p class="highlight">${p.highlight}</p>
-	<a class="buy-button"
-	   href="${p.link}"
-	   target="_blank"
-	   data-product="${p.name}"
-	   data-link="${p.link}">
-	   🔗 지금 구매하기
-	</a>
-
+      <a class="buy-button"
+         href="${p.link}"
+         target="_blank"
+         data-product="${p.name}"
+         data-link="${p.link}">
+         🔗 지금 구매하기
+      </a>
     </div>
   `;
 };
 
-// JS 하단에 클릭 이벤트 위임 추가
+// ✅ [클릭 이벤트 - 구매 버튼 클릭 시 로그 기록]
 document.addEventListener("click", (e) => {
   const btn = e.target.closest(".buy-button");
   if (!btn) return;
   const productName = btn.getAttribute("data-product");
   const productLink = btn.getAttribute("data-link");
-  const queryFromAttr = query; // fallback(프롬프트에 data-query삭제 필요)
+  const queryFromAttr = query; // fallback 용 (data-query 삭제된 경우 대비)
   trackProductClick(productName, productLink, queryFromAttr);
 });
 
+// ✅ [클릭 이벤트 - 슬라이더 버튼 클릭 시 이미지 전환]
 document.addEventListener("click", (e) => {
   if (!e.target.classList.contains("slider-btn")) return;
 
@@ -264,10 +274,12 @@ document.addEventListener("click", (e) => {
   slides[nextIndex].classList.add("active");
 });
 
+// ✅ [유틸 함수 - 일정 시간 지연 처리용]
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// ✅ [하단 고지 문구 삽입 - 쿠팡 파트너스 안내]
 function insertFooter() {
   const footer = document.createElement("footer");
   footer.style.marginTop = "60px";
@@ -276,12 +288,10 @@ function insertFooter() {
   footer.style.fontSize = "0.9rem";
   footer.style.color = "#888";
   footer.innerText = '"위 결과는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다."';
-
   document.body.appendChild(footer);
 }
 
-
-// 페이지 로딩 시, query값에 따라 API 요청 및 HTML 렌더링
+// ✅ [초기 페이지 렌더링 로직 - query 기반 추천 리스트 요청 및 출력]
 document.addEventListener("DOMContentLoaded", async () => {
   const queryBox = document.getElementById("queryText");
   const explanationBox = document.getElementById("queryExplanation");
@@ -291,25 +301,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     queryBox.innerText = `💬 “${query}” 조건에 맞는 추천 리스트입니다.`;
 
     try {
-    
-      startFancyLoading(); // 로딩 시작
-      insertFeedbackSection();
+      startFancyLoading();                 // 로딩 애니메이션 시작
+      insertFeedbackSection();            // 피드백 섹션 추가
+
       const res = await fetch(`/api/products?query=${encodeURIComponent(query)}`);
       const data = await res.json();
 
-      
-
+      // 👉 제품 데이터가 없는 경우 N8N fallback 호출
       if (!data.products || data.products.length === 0) {
         await fetchFallbackFromN8N(query);
-        //insertFeedbackSection();
-		bindRefineOptionClick();
-        renderFollowupSearchBox();
+        bindRefineOptionClick();          // refine 클릭 이벤트 바인딩
+        renderFollowupSearchBox();        // 이어 검색창 표시
         return;
       }
-      
-      await new Promise(r => setTimeout(r, Math.random() * 2000 + 3000)); // 3~5초 대기
-      container.innerHTML = ""; // 로딩 화면 제거
-      
+
+      await new Promise(r => setTimeout(r, Math.random() * 2000 + 3000)); // 일부러 딜레이
+      container.innerHTML = "";           // 기존 로딩 화면 제거
+
       explanationBox.innerText = data.explanation || "";
       data.products.forEach(p => {
         container.insertAdjacentHTML("beforeend", renderProduct(p));
@@ -317,17 +325,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
       queryBox.innerText = "추천 상품을 불러오는 데 문제가 발생했어요.";
-      await fetchFallbackFromN8N(query);
+      await fetchFallbackFromN8N(query); // 예외 발생 시 N8N fallback
     }
-    renderFollowupSearchBox();
-    //insertFeedbackSection();
-    insertFooter();
+
+    renderFollowupSearchBox();  // 이어서 검색 박스 렌더링
+    insertFooter();             // 하단 고지 삽입
+
   } else {
+    // query 없을 때 기본 추천
     queryBox.innerText = "💬 조건을 인식하지 못했어요. 기본 추천 리스트를 보여드릴게요.";
     await fetchFallbackFromN8N("기본 추천 리스트 보여줘");
   }
 });
 
+// ✅ [Fancy 로딩 애니메이션 구성 및 실행]
 function startFancyLoading() {
   const container = document.getElementById("product-container");
   container.innerHTML = `
@@ -366,10 +377,10 @@ function startFancyLoading() {
     }
   }, 300);
 
-  return () => clearInterval(interval);
+  return () => clearInterval(interval); // 정지 함수 반환
 }
 
-
+// ✅ [피드백 섹션 삽입 - 오픈채팅 안내 포함]
 function insertFeedbackSection() {
   const section = document.createElement("div");
   section.style.marginTop = "40px";
@@ -397,6 +408,7 @@ function insertFeedbackSection() {
   document.body.appendChild(section);
 }
 
+// ✅ [이어검색 UI 삽입 - query 존재 시에만 출력]
 function renderFollowupSearchBox() {
   if (!query) return;
 
@@ -421,6 +433,7 @@ function renderFollowupSearchBox() {
 `;
 }
 
+// ✅ [이어검색 처리 로직 - 입력된 텍스트를 기존 query에 덧붙여 검색]
 function followupSearch() {
   const extra = document.getElementById("followupInput").value.trim();
   if (!extra) return;
@@ -428,14 +441,15 @@ function followupSearch() {
   const newQuery = `${query} ${extra}`.trim();
 
   logEvent({
-        type: "이어검색",
-        newQuery: extra,
-        query: query
-      });
+    type: "이어검색",
+    newQuery: extra,
+    query: query
+  });
+
   location.href = `/search?query=${encodeURIComponent(newQuery)}`;
 }
 
-
+// ✅ [역질문(리파인) 카드 클릭 시 followupInput에 키워드 자동 추가]
 function bindRefineOptionClick() {
   document.querySelectorAll('.refine-option').forEach(el => {
     el.addEventListener('click', () => {
@@ -450,13 +464,13 @@ function bindRefineOptionClick() {
         query: query
       });
 
-      // 기존 입력 내용과 공백으로 구분하여 덧붙이기
-	    input.value = `${input.value} ${extra}`;
-      
+      // 기존 입력값 뒤에 공백을 두고 이어 붙이기
+      input.value = `${input.value} ${extra}`;
     });
   });
 }
 
+// ✅ [가격 및 링크 정보를 /api/get_price 에서 가져오기]
 async function fetchPriceAndLink(name) {
   try {
     const res = await fetch('/api/get_price', {

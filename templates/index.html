@@ -4,69 +4,78 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- 검색엔진 최적화를 위한 기본 메타태그 -->
+  <!-- ✅ 기본 SEO 메타 태그 -->
   <meta name="description" content="당신의 조건에 딱 맞는 제품을 3초 만에 추천받아보세요. AI 쇼핑 추천, Com.On에서 시작하세요.">
   <meta name="keywords" content="Com.On, 컴온, AI 쇼핑 추천, 제품 추천, 챗봇 쇼핑, 감성 쇼핑, 저가 제품 추천">
   <meta name="author" content="Team Com.On">
 
-  <!-- Open Graph for SNS 공유 -->
+  <!-- 📡 SNS 공유 최적화: Open Graph 설정 -->
   <meta property="og:title" content="Com.On - 당신만을 위한 AI 쇼핑 추천" />
   <meta property="og:description" content="당신의 조건에 딱 맞는 제품을 3초 만에 추천받아보세요. 단순한 검색을 넘어서, com.on은 생각을 읽습니다." />
   <meta property="og:image" content="https://velog.velcdn.com/images/gogogi313/post/21e72a8f-67e3-43c4-9395-8c8e6e5faa18/image.png" />
   <meta property="og:url" content="https://com-on.onrender.com" />
   <meta property="og:type" content="website" />
 
-  <!-- Twitter Card -->
+  <!-- 🐤 Twitter Card 설정 -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Com.On - 당신만을 위한 AI 쇼핑 추천" />
   <meta name="twitter:description" content="내가 찾던 조건, 딱 맞게 추천받고 싶다면? Com.On으로 시작하세요." />
   <meta name="twitter:image" content="https://velog.velcdn.com/images/gogogi313/post/21e72a8f-67e3-43c4-9395-8c8e6e5faa18/image.png" />
 
+  <!-- 🔖 페이지 타이틀 -->
   <title>Com.On - 감성 AI 쇼핑 추천</title>
 
+  <!-- 🔍 사이트 소유권 확인용 메타 태그 -->
   <meta name="google-site-verification" content="ChlG7sbEHXso8Px4-FXrMOKDSPinwyQT9GLih-U_jEE" />
   <meta name="naver-site-verification" content="b111655c62d1fee43f7aae5efde473be08d0e724" />
 
+  <!-- 🎨 외부 스타일시트 연결 -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+  <!-- 📜 메인 스크립트 로드 -->
   <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </head>
 
 <body>
-<div class="wrapper">
-  <div class="container">
-    <div class="logo-title">
-	  <a href="/">
-        <img
-          src="https://velog.velcdn.com/images/gogogi313/post/21e72a8f-67e3-43c4-9395-8c8e6e5faa18/image.png"
-          alt="팀 로고1"
-          class="logo-img"
+  <div class="wrapper">
+    <div class="container">
+      
+      <!-- 🖼️ 로고 및 제목 영역 -->
+      <div class="logo-title">
+        <a href="/">
+          <img
+            src="https://velog.velcdn.com/images/gogogi313/post/21e72a8f-67e3-43c4-9395-8c8e6e5faa18/image.png"
+            alt="팀 로고1"
+            class="logo-img"
+          />
+        </a>
+        <h1 class="logo-text">com.on</h1>
+      </div>
+
+      <!-- 💡 예시 질문 카드가 들어갈 영역 -->
+      <div class="examples">
+        <div class="example-list" id="example-list"></div>
+      </div>
+
+      <!-- 🔎 사용자 입력 검색창 -->
+      <form class="search-box" onsubmit="goToResult(); return false;">
+        <input
+          type="text"
+          id="userQuery"
+          placeholder="검색어를 입력하세요..."
         />
-	  </a>
-      <h1 class="logo-text">com.on</h1>
+        <button type="submit">검색</button>
+      </form>
     </div>
 
-    <div class="examples">
-      <div class="example-list" id="example-list"></div>
-    </div>
-
-    <form class="search-box" onsubmit="goToResult(); return false;">
-      <input
-        type="text"
-        id="userQuery"
-        placeholder="검색어를 입력하세요..."
-      />
-      <button type="submit">검색</button>
-    </form>
-  </div>
-  <footer style="margin-top: 60px; padding: 20px 0; text-align: center; font-size: 0.9rem; color: #888;">
-    ⓒ 2025 최지웅 All right reserved. (팀 GRIT)
-  </footer>
+    <!-- 📄 하단 푸터 -->
+    <footer style="margin-top: 60px; padding: 20px 0; text-align: center; font-size: 0.9rem; color: #888;">
+      ⓒ 2025 최지웅 All right reserved. (팀 GRIT)
+    </footer>
   </div>
 
-  
-
-  <!-- Google Tag Manager (noscript) -->
+  <!-- 📊 Google Tag Manager (비활성 사용자 대응용 noscript 태그) -->
   <noscript>
     <iframe
       src="https://www.googletagmanager.com/ns.html?id=GTM-MZHQSKG5"

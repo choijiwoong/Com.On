@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  sitemap.xml for Com.On
+  이 파일은 검색 엔진이 사이트의 구조를 이해하고 색인을 최적화할 수 있도록 돕습니다.
+  각 <url> 태그는 색인될 URL과 그 속성 정보를 포함합니다.
+-->
+
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- 메인 페이지: 가장 높은 우선순위로 설정 -->
   <url>
-    <loc>https://com-on.onrender.com/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <loc>https://com-on.onrender.com/</loc>         <!-- 페이지 URL -->
+    <changefreq>weekly</changefreq>                 <!-- 업데이트 빈도: 주 1회 -->
+    <priority>1.0</priority>                         <!-- 우선순위 (최고: 1.0) -->
   </url>
+
 </urlset>

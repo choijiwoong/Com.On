@@ -3,24 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 🌐 페이지 제목 -->
   <title>Com.On - 추천 보고서</title>
 
+  <!-- 🎨 CSS 스타일시트 로드 -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+
+  <!-- 🧩 구글 아이콘 폰트 로드 -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+  <!-- 📜 JavaScript 스크립트 로드 -->
   <script src="{{ url_for('static', filename='js/result.js') }}"></script>
   <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
   <script src="{{ url_for('static', filename='js/logger.js') }}"></script>
-
 </head>
 
 <body>
   <div class="wrapper page-enter-up">
-    <!-- 네이게이션 바 -->
+
+    <!-- 🔝 상단 네비게이션 바 -->
     <div class="navbar">
       <div class="navbar-left">
+        <!-- 🏠 홈 링크 + 로고 -->
         <a href="/" class="navbar-logo">
           <img
             src="https://velog.velcdn.com/images/gogogi313/post/21e72a8f-67e3-43c4-9395-8c8e6e5faa18/image.png"
@@ -28,23 +35,30 @@
             class="logo-img"
           />
         </a>
-        <a href="/" class="logo-title">Com.On</a> <!-- ✅ 변경된 부분 -->
+        <a href="/" class="logo-title">Com.On</a>
       </div>
       <span class="navbar-title">딥리서치 쇼핑 AI</span>
     </div>
 
-    <!-- 메인 콘텐츠 -->
+    <!-- 📋 사용자 질의 & 결과 설명 -->
     <p id="queryText">사용자의 조건을 불러오는 중...</p>
     <p id="queryExplanation"></p>
+
+    <!-- 🛍️ 추천 제품 카드 렌더링 영역 -->
     <div id="product-container"></div>
+
+    <!-- ❓ 역질문 카드 영역 -->
     <div id="refine-question" class="follow-up"></div>
+
+    <!-- ➕ 이어서 검색 입력창 -->
     <div id="followup-search"></div>
 
-    <!-- 채팅 UI -->
-    <!-- 고정된 작고 둥근 버튼 -->
+    <!-- 💬 챗봇 인터페이스 시작 -->
+
+    <!-- 📌 플로팅 챗 버튼 -->
     <button id="chat-toggle-button" class="chat-toggle-button" onclick="toggleChat()">🗨️ 이어서 대화</button>
 
-    <!-- 채팅 창 -->
+    <!-- 💬 챗 UI 박스 -->
     <div class="chat-container minimized" id="chat-container">
       <div class="chat-header">
         <h2>이어서 대화</h2>
@@ -54,6 +68,8 @@
           </span>
         </button>
       </div>
+
+      <!-- 🔁 대화 메시지 영역 -->
       <div class="chat-messages" id="chat-messages">
         <div class="message bot">
           <div class="message-content">
@@ -67,12 +83,15 @@
           </div>
         </div>
       </div>
+
+      <!-- 📝 사용자 입력 -->
       <div class="chat-input">
         <input type="text" id="message-input" placeholder="원하시는 조건을 입력해주세요...">
         <button onclick="sendMessage()">전송</button>
       </div>
     </div>
 
+    <!-- 📦 서버에서 전달받은 제품 리스트 (Jinja 반복) -->
     <div class="search-results">
       <div class="product-container">
           {% for product in products %}
@@ -88,14 +107,15 @@
       </div>
     </div>
 
+    <!-- 🔄 로딩 중 오버레이 -->
     <div class="loading-overlay" id="loading-overlay">
       <div style="text-align: center;">
           <div class="loading-spinner"></div>
           <div class="loading-text">검색 중...</div>
       </div>
     </div>
-    
-    <!-- Google Tag Manager (noscript) -->
+
+    <!-- 📊 Google Tag Manager (noscript) -->
     <noscript>
       <iframe
         src="https://www.googletagmanager.com/ns.html?id=GTM-MZHQSKG5"
