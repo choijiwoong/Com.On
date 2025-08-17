@@ -24,24 +24,23 @@ let stopLoadingAnimation; // 로딩 애니메이션 종료 함수 보관용
 // ==============================
 // 🖼️ 이미지 유효성 검사 및 선택
 // ==============================
-async function getValidImageURLs(query, max = 2) {
+async function getValidImageURLs(questionText, max = 2) {
   const validImages = [];
   try {
-    const res = await fetch("https://n8n.1000.school/webhook/naver-image", {
+    const res = await fetch("/api/get_naver_img", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query: questionText })
     });
-    const items = await res.json();
+    const data = await res.json();
+    const imageUrl = data.image_url;
 
-    // 썸네일 이미지가 실제 표시 가능한 경우만 필터링
-    for (const item of items) {
-      const isValid = await validateImage(item.thumbnail);
-      if (isValid) {
-        validImages.push(item.thumbnail);
-        if (validImages.length >= max) break; // 최대 개수 도달 시 중단
-      }
+    // 썸네일 이미지가 실제 표시 가능한지 확인
+    const isValid = await validateImage(imageUrl);
+    if (isValid) {
+      validImages.push(imageUrl);
     }
+
   } catch (err) {
     console.error("이미지 오류:", err);
   }
@@ -85,22 +84,23 @@ const fetchFallbackFromN8N = async (questionText) => {
 
   try {
     // 1. 인트로 텍스트와 제품 HTML 요청 병렬 처리
-    const introPromise = fetch('https://n8n.1000.school/webhook/get/intro', {
+    const introPromise = fetch('/api/get_intro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: questionText })
     }).then(res => {
+
       if (!res.ok) throw new Error("인트로 추천 불러오기 실패");
-      return res.text();
+      return res.json();
     });
 
-    const productPromise = fetch('https://n8n.1000.school/webhook/c932befe-195e-46b0-8502-39c9b1c69cc2', {
+    const productPromise = fetch('/api/get_product_card', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: questionText })
     }).then(res => {
       if (!res.ok) throw new Error("네트워크 오류 발생");
-      return res.text();
+      return res.json();
     });
 
     // 2. UI 초기화
@@ -123,7 +123,7 @@ const fetchFallbackFromN8N = async (questionText) => {
     logEvent({
       type: "결과창 이동 완료",
       duration_sec: durationSec,
-      query: questionText 
+      query: questionText
     });
 
     // 6. 각 제품에 이미지와 가격/링크 비동기 삽입

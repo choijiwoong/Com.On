@@ -1,5 +1,5 @@
 # Python 설치된 가벼운 리눅스
-FROM python:3.10-slim      
+FROM python:3.10-slim
 
 # 작업 디렉토리 설정
 WORKDIR /app               
@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 COPY . .                   
 
 # Flask 기본 포트
-EXPOSE 5000                
+EXPOSE 5000
 
 # 실행 명령어
 CMD ["flask", "run", "--host=0.0.0.0"]  
