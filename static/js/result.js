@@ -79,17 +79,15 @@ function typeText(text, el, speed = 30) {
 // ==============================
 const fetchFallbackFromN8N = async (questionText) => {
   const container = document.getElementById("product-container");
-  const startTime = performance.now(); // 시간 측정 시작
-  const stopLoading = startFancyLoading(); // 로딩 애니메이션 실행
+  const startTime = performance.now();
+  const stopLoading = startFancyLoading();
 
   try {
-    // 1. 인트로 텍스트와 제품 HTML 요청 병렬 처리
     const introPromise = fetch('/api/get_intro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: questionText })
     }).then(res => {
-
       if (!res.ok) throw new Error("인트로 추천 불러오기 실패");
       return res.json();
     });
@@ -99,72 +97,72 @@ const fetchFallbackFromN8N = async (questionText) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ question: questionText })
     }).then(res => {
-      if (!res.ok) throw new Error("네트워크 오류 발생");
+      if (!res.ok) throw new Error("제품카드 불러오기 실패");
       return res.json();
     });
 
-    // 2. UI 초기화
     startFancyLoading();
 
-    // 3. 인트로 텍스트 도착 → 타이핑 표시
     introPromise.then(introText => {
       typeText(introText, document.getElementById("queryExplanation"));
     });
 
-    // 4. 제품 HTML 도착 → DOM 삽입
-    const html = await productPromise;
-    const loader = document.getElementById("loading-visual");
-    if (loader) loader.remove();
-    if (typeof stopLoading === "function") stopLoading();
-    container.innerHTML += html;
+    // 제품 HTML이 도착하면, 다음 로직을 순차적으로 실행합니다.
+    productPromise.then(async (html) => {
+      const loader = document.getElementById("loading-visual");
+      if (loader) loader.remove();
+      if (typeof stopLoading === "function") stopLoading();
+      container.innerHTML += html;
 
-    // 5. 소요 시간 기록 및 전송
-    const durationSec = Number(((performance.now() - startTime) / 1000).toFixed(2));
-    logEvent({
-      type: "결과창 이동 완료",
-      duration_sec: durationSec,
-      query: questionText
+      // === 이 부분부터 비동기 로직이 시작됩니다. ===
+      // 6. 각 제품에 이미지와 가격/링크 비동기 삽입
+      const products = container.querySelectorAll(".product");
+      const updateTasks = Array.from(products).map(async (product) => {
+        const title = product.querySelector("h2")?.textContent.replace("💻", "").trim();
+        const slider = product.querySelector(".image-slider");
+
+        if (!title || !slider) return;
+
+        const [images, { price, link }] = await Promise.all([
+          getValidImageURLs(title, 2),
+          fetchPriceAndLink(title)
+        ]);
+
+        // 이미지 삽입
+        if (images.length > 0) {
+          slider.innerHTML = `
+            ${images.map((img, i) => `
+              <img src="${img}" class="slide ${i === 0 ? 'active' : ''}" alt="${title} 이미지 ${i + 1}">
+            `).join('')}
+            ${images.length > 1 ? `
+              <button class="slider-btn prev">&#10094;</button>
+              <button class="slider-btn next">&#10095;</button>
+            ` : ''}
+          `;
+        }
+
+        // 가격 정보 삽입
+        const priceTag = product.querySelector(".product-info p:nth-child(2)");
+        if (priceTag) priceTag.innerHTML = `<strong>가격:</strong> ${price}`;
+
+        // 구매 버튼 링크 삽입
+        const buyBtn = product.querySelector(".buy-button");
+        if (buyBtn) {
+          buyBtn.setAttribute("href", link);
+          buyBtn.setAttribute("data-link", link);
+        }
+      });
+
+      await Promise.all(updateTasks); // 모든 삽입 작업 완료까지 대기
+
+      // 5. 소요 시간 기록 및 전송
+      const durationSec = Number(((performance.now() - startTime) / 1000).toFixed(2));
+      logEvent({
+        type: "결과창 이동 완료",
+        duration_sec: durationSec,
+        query: questionText
+      });
     });
-
-    // 6. 각 제품에 이미지와 가격/링크 비동기 삽입
-    const products = container.querySelectorAll(".product");
-    const updateTasks = Array.from(products).map(async (product) => {
-      const title = product.querySelector("h2")?.textContent.replace("💻", "").trim();
-      const slider = product.querySelector(".image-slider");
-
-      if (!title || !slider) return;
-
-      const [images, { price, link }] = await Promise.all([
-        getValidImageURLs(title, 2),
-        fetchPriceAndLink(title)
-      ]);
-
-      // 이미지 삽입
-      if (images.length > 0) {
-        slider.innerHTML = `
-          ${images.map((img, i) => `
-            <img src="${img}" class="slide ${i === 0 ? 'active' : ''}" alt="${title} 이미지 ${i + 1}">
-          `).join('')}
-          ${images.length > 1 ? `
-            <button class="slider-btn prev">&#10094;</button>
-            <button class="slider-btn next">&#10095;</button>
-          ` : ''}
-        `;
-      }
-
-      // 가격 정보 삽입
-      const priceTag = product.querySelector(".product-info p:nth-child(2)");
-      if (priceTag) priceTag.innerHTML = `<strong>가격:</strong> ${price}`;
-
-      // 구매 버튼 링크 삽입
-      const buyBtn = product.querySelector(".buy-button");
-      if (buyBtn) {
-        buyBtn.setAttribute("href", link);
-        buyBtn.setAttribute("data-link", link);
-      }
-    });
-
-    await Promise.all(updateTasks); // 모든 삽입 작업 완료까지 대기
   } catch (error) {
     container.innerHTML = `<p>❌ 기본 추천을 불러오지 못했어요: ${error.message}</p>`;
   }
