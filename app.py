@@ -352,6 +352,8 @@ def get_intro():
             - 설명 맨 마지막에 이모지 추가
 
             ❗ 문단 분리해서 작성. 예시나 복붙 금지. 상황에 맞는 창의적 문장 구성
+
+            분량은 300자 이내
         """
         # OpenAI API 호출
         completion = client.chat.completions.create(
