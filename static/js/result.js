@@ -77,7 +77,7 @@ function typeText(text, el, speed = 30) {
 // ==============================
 // 🔁 추천 HTML을 n8n에서 불러와 렌더링
 // ==============================
-const fetchFallbackFromN8N = async (questionText) => {
+const fetchFallbackProductData = async (questionText) => {
   const container = document.getElementById("product-container");
   const startTime = performance.now();
   const stopLoading = startFancyLoading();
@@ -307,7 +307,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // 👉 제품 데이터가 없는 경우 N8N fallback 호출
       if (!data.products || data.products.length === 0) {
-        await fetchFallbackFromN8N(query);
+        await fetchFallbackProductData(query);
         bindRefineOptionClick();          // refine 클릭 이벤트 바인딩
         renderFollowupSearchBox();        // 이어 검색창 표시
         return;
@@ -323,7 +323,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
       queryBox.innerText = "추천 상품을 불러오는 데 문제가 발생했어요.";
-      await fetchFallbackFromN8N(query); // 예외 발생 시 N8N fallback
+      await fetchFallbackProductData(query); // 예외 발생 시 N8N fallback
     }
 
     renderFollowupSearchBox();  // 이어서 검색 박스 렌더링
@@ -332,7 +332,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   } else {
     // query 없을 때 기본 추천
     queryBox.innerText = "💬 조건을 인식하지 못했어요. 기본 추천 리스트를 보여드릴게요.";
-    await fetchFallbackFromN8N("기본 추천 리스트 보여줘");
+    await fetchFallbackProductData("기본 추천 리스트 보여줘");
   }
 });
 
