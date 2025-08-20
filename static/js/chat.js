@@ -88,7 +88,7 @@ function sendMessage() {
                     <strong>이 키워드로 검색해보세요:</strong>
                     <span class="keywords">${data.final_keywords}</span>
                 </div>
-                <button class="search-button" onclick="window.location.href='/search?query=${encodeURIComponent(data.final_keywords)}'">
+                <button class="search-button" onclick="window.location.href='/search?query=${query} ${encodeURIComponent(data.final_keywords)}'">
                     검색하기
                 </button>
             `;
