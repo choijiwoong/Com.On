@@ -73,6 +73,26 @@ function typeText(text, el, speed = 30) {
   startFancyLoading(); // 로딩 애니메이션 시작
 }
 
+// open ai단에서 가져온 html코드에서 ```html표시가 있다면 제거
+function extractHtmlCode(codeBlock) {
+  if (typeof codeBlock !== 'string') {
+    return ''; // Return an empty string if the input is not a string
+  }
+
+  const trimmedCode = codeBlock.trim();
+
+  if (trimmedCode.startsWith('```html') && trimmedCode.endsWith('```')) {
+    // Remove the starting and ending markers
+    logEvent({
+      type: "openai ```html태그 제거 완료",
+      query: query
+    });
+    return trimmedCode.substring(7, trimmedCode.length - 3).trim();
+  }
+
+  // Return the original string if the markers are not found
+  return codeBlock;
+}
 
 // ==============================
 // 🔁 추천 HTML을 n8n에서 불러와 렌더링
@@ -104,7 +124,7 @@ const fetchFallbackProductData = async (questionText) => {
     startFancyLoading();
 
     introPromise.then(introText => {
-      typeText(introText, document.getElementById("queryExplanation"));
+      typeText(extractHtmlCode(introText), document.getElementById("queryExplanation"));
     });
 
     // 제품 HTML이 도착하면, 다음 로직을 순차적으로 실행합니다.
@@ -112,7 +132,7 @@ const fetchFallbackProductData = async (questionText) => {
       const loader = document.getElementById("loading-visual");
       if (loader) loader.remove();
       if (typeof stopLoading === "function") stopLoading();
-      container.innerHTML += html;
+      container.innerHTML += extractHtmlCode(html);
 
       // === 이 부분부터 비동기 로직이 시작됩니다. ===
       // 6. 각 제품에 이미지와 가격/링크 비동기 삽입
