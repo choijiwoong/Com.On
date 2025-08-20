@@ -94,7 +94,7 @@ def api_questions():
 # =======================
 @app.route("/api/keep-alive")
 def receive_ping():
-    return "true"
+    return ''
 
 # =======================
 # 🛍️ 상품 추천 API
@@ -269,7 +269,7 @@ def log_event():
         log_msg = f'[LOG] {log_type} | 사용자: {user_id} | {detail_str}'
 
         app.logger.info(log_msg)
-        return '', 204
+        return '', 200
     except Exception as e:
         app.logger.error(f"[LOG] log_event 실패: {str(e)}")
         return jsonify({'error': '로깅 실패'}), 500
