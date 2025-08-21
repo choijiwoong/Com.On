@@ -43,7 +43,7 @@ client = OpenAI(api_key=api_key)
 @app.route("/")
 def index():
     response = make_response(render_template("index.html"))
-    response = cookie_manage(request, response)
+    response, _ = cookie_manage(request, response)
     return response
 
 def cookie_manage(request, response):
@@ -52,31 +52,28 @@ def cookie_manage(request, response):
         user_cookie = str(uuid.uuid4())
         response.set_cookie("user_cookie", user_cookie, max_age=60*60*24*30)
 
-        app.logger.info(f"[LOG] 신규 사용자 방문 | Cookie: {user_cookie}")
+        app.logger.info(f"[LOG] 신규 쿠키 생성 | Cookie: {user_cookie}")
     else:
-        app.logger.info(f"[LOG] 기존 사용자 방문 | Cookie: {user_cookie}")
-    return response
+        app.logger.info(f"[LOG] 기존 쿠키 사용 | Cookie: {user_cookie}")
+    return response, user_cookie
 
 # =======================
 # 🔍 검색 결과 페이지
 # =======================
+
+# 슬랙 알림 설정
+def send_slack_alert(message):
+    payload = {"text": message}
+    requests.post(slack_api_key, json=payload)
 @app.route("/search")
 def result():
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    query = request.args.get("query", "쿼리 없음")
-
-    # 쿠키 확인 및 사용자 ID 생성
-    user_id = request.cookies.get("user_id")
-    new_user = False
-    if not user_id:
-        user_id = str(uuid.uuid4())
-        new_user = True
-
-    app.logger.info(f"{now} [LOG] 결과창 이동 | query = {query} | 사용자: {user_id}")
-    send_slack_alert(f"/search {query}")
     response = make_response(render_template("result.html"))
-    if new_user:
-        response.set_cookie("user_id", user_id, max_age=60 * 60 * 24 * 30)
+    response, user_cookie = cookie_manage(request, response)
+    query = request.args.get("query", "")
+
+    app.logger.info(f"[LOG] 결과창 이동 | query = {query} | 사용자: {user_cookie} | 시각: {now}")
+    send_slack_alert(f"/search {query}")
     return response
 
 # =======================
@@ -534,10 +531,6 @@ if __name__ == "__main__":
 # ========================
 # inner funcitons
 # ========================
-# 슬랙 알림 설정
-def send_slack_alert(message):
-    payload = {"text": message}
-    requests.post(slack_api_key, json=payload)
 
 # 아래는 완성된 네이버 이미지 API 함수입니다.
 def fetch_naver_img(query):

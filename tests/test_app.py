@@ -1,7 +1,18 @@
-import pytest
+import pytest, os, uuid, requests
 from app import app # app.py에서 Flask app 객체를 가져옵니다.
 from app import cookie_manage
-import uuid
+from dotenv import load_dotenv
+
+# =======================
+# 🔐 환경 변수 및 API 키 로드
+# =======================
+if os.path.exists(".env"):
+    load_dotenv()
+
+api_key = os.getenv("OPENAI_API_KEY")
+naver_api_client_id = os.getenv("NAVER_API_CLIENT_ID")
+naver_api_client_secret = os.getenv("NAVER_API_CLIENT_SECRET")
+slack_api_key=os.getenv("SLACK_API_TOKEN")
 
 # github push test(token expired)
 # pytest-flask를 사용하여 테스트용 클라이언트를 생성하는 fixture
@@ -26,6 +37,15 @@ def test_cookie_manage_existing_user(client):
     # then
     assert 'Set-Cookie' not in response.headers
     assert response.status_code == 200
+
+def test_slack_api(client):
+    # given
+    # when
+    response1 = requests.get(slack_api_key)
+    response2 = requests.post(slack_api_key, json={"text": "slack api test"})# wrong request
+    # then
+    assert response1.status_code == 400 # 서버에서 응답이 오긴 하는지
+    assert response2.status_code == 200 # 테스트 메시지 발송여부 확인
 
 # 1. 메인 페이지('/')가 정상적으로 로드되는지 테스트
 def test_index_page(client):
