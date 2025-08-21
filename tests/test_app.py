@@ -3,6 +3,7 @@ from app import app # app.py에서 Flask app 객체를 가져옵니다.
 from app import cookie_manage
 import uuid
 
+# github push test(token expired)
 # pytest-flask를 사용하여 테스트용 클라이언트를 생성하는 fixture
 @pytest.fixture
 def client():
