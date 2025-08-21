@@ -37,27 +37,25 @@ if not api_key:
     raise EnvironmentError("❌ OPENAI_API_KEY가 설정되지 않았습니다!")
 client = OpenAI(api_key=api_key)
 
-
-# 슬랙 알림 설정
-def send_slack_alert(message):
-    payload = {"text": message}
-    requests.post(slack_api_key, json=payload)
-
 # =======================
 # 🏠 루트 페이지 (index)
 # =======================
 @app.route("/")
 def index():
-    user_id = request.cookies.get("user_id")
-    if not user_id:
-        user_id = str(uuid.uuid4())  # 고유 사용자 ID 생성
-        response = make_response(render_template("index.html"))
-        response.set_cookie("user_id", user_id, max_age=60*60*24*30)  # 30일 유지
-        app.logger.info(f"[LOG] 신규 사용자 방문 | ID: {user_id}")
-        return response
+    response = make_response(render_template("index.html"))
+    response = cookie_manage(request, response)
+    return response
+
+def cookie_manage(request, response):
+    user_cookie = request.cookies.get("user_cookie")
+    if not user_cookie:
+        user_cookie = str(uuid.uuid4())
+        response.set_cookie("user_cookie", user_cookie, max_age=60*60*24*30)
+
+        app.logger.info(f"[LOG] 신규 사용자 방문 | Cookie: {user_cookie}")
     else:
-        app.logger.info(f"[LOG] 기존 사용자 방문 | ID: {user_id}")
-        return render_template("index.html")
+        app.logger.info(f"[LOG] 기존 사용자 방문 | Cookie: {user_cookie}")
+    return response
 
 # =======================
 # 🔍 검색 결과 페이지
@@ -285,29 +283,6 @@ def sitemap():
 def robots():
     return send_file('public/robots.txt', mimetype='text/plain')
 
-# =======================
-# 💰 네이버 쇼핑 API - 가격 크롤링
-# =======================
-def fetch_price_and_link(query):
-    headers = {
-        "X-Naver-Client-Id": naver_api_client_id,
-        "X-Naver-Client-Secret": naver_api_client_secret
-    }
-    params = {
-        "query": query,
-        "display": 1,
-        "sort": "sim"
-    }
-
-    res = requests.get("https://openapi.naver.com/v1/search/shop.json", headers=headers, params=params)
-
-    if res.status_code == 200:
-        data = res.json()
-        if data["items"]:
-            item = data["items"][0]
-            return f"{int(item['lprice']):,}원", item["link"]
-    return "정보 없음", ""
-
 @app.route('/api/get_price', methods=['POST'])
 def get_price():
     data = request.get_json()
@@ -533,6 +508,37 @@ def get_product_card():
         app.logger.error(f"[LOG] 제품카드 불러오기 실패: {str(e)}")
         return jsonify({'error': '제품카드 불러오기 실패'}), 500
 
+@app.route('/api/get_naver_img', methods=['POST'])
+def get_naver_img():
+    try:
+        data = request.get_json()
+        if not data or not data.get('query'):
+            return jsonify({'error': '유효한 쿼리가 제공되지 않았습니다.'}), 400
+
+        query = data.get('query')
+        image_url = fetch_naver_img(query)
+
+        # 이미지 URL을 JSON 응답으로 반환
+        return jsonify({'image_url': image_url}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# =======================
+# 🚪 앱 실행
+# =======================
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+
+# ========================
+# inner funcitons
+# ========================
+# 슬랙 알림 설정
+def send_slack_alert(message):
+    payload = {"text": message}
+    requests.post(slack_api_key, json=payload)
+
 # 아래는 완성된 네이버 이미지 API 함수입니다.
 def fetch_naver_img(query):
     headers = {
@@ -557,26 +563,23 @@ def fetch_naver_img(query):
     # 이미지를 찾을 수 없는 경우 빈 문자열 반환
     return ""
 
+# 💰 네이버 쇼핑 API - 가격 크롤링
+def fetch_price_and_link(query):
+    headers = {
+        "X-Naver-Client-Id": naver_api_client_id,
+        "X-Naver-Client-Secret": naver_api_client_secret
+    }
+    params = {
+        "query": query,
+        "display": 1,
+        "sort": "sim"
+    }
 
-@app.route('/api/get_naver_img', methods=['POST'])
-def get_naver_img():
-    try:
-        data = request.get_json()
-        if not data or not data.get('query'):
-            return jsonify({'error': '유효한 쿼리가 제공되지 않았습니다.'}), 400
+    res = requests.get("https://openapi.naver.com/v1/search/shop.json", headers=headers, params=params)
 
-        query = data.get('query')
-        image_url = fetch_naver_img(query)
-
-        # 이미지 URL을 JSON 응답으로 반환
-        return jsonify({'image_url': image_url}), 200
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# =======================
-# 🚪 앱 실행
-# =======================
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    if res.status_code == 200:
+        data = res.json()
+        if data["items"]:
+            item = data["items"][0]
+            return f"{int(item['lprice']):,}원", item["link"]
+    return "정보 없음", ""

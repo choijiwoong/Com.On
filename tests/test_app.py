@@ -1,5 +1,7 @@
 import pytest
 from app import app # app.py에서 Flask app 객체를 가져옵니다.
+from app import cookie_manage
+import uuid
 
 # pytest-flask를 사용하여 테스트용 클라이언트를 생성하는 fixture
 @pytest.fixture
@@ -7,6 +9,22 @@ def client():
     app.config['TESTING'] = True
     with app.test_client() as client:
         yield client
+
+def test_cookie_manage_new_user(client):
+    # given
+    # when
+    response = client.get('/')
+    # then
+    assert response.status_code == 200
+    assert "user_cookie" in response.headers['Set-Cookie']
+def test_cookie_manage_existing_user(client):
+    # given
+    response = client.get('/') # first visit
+    # when
+    response = client.get('/') # second visit
+    # then
+    assert 'Set-Cookie' not in response.headers
+    assert response.status_code == 200
 
 # 1. 메인 페이지('/')가 정상적으로 로드되는지 테스트
 def test_index_page(client):
