@@ -1,0 +1,27 @@
+name: Render Keep-Alive Ping
+
+on:
+  # 매 5분마다 실행되도록 스케줄 설정
+  schedule:
+    # 💡 UTC 기준: 한국 시간(KST) 새벽 1시 (04:00)부터 아침 6시 (21:00)까지 실행을 중지
+    # 즉, UTC 21:00부터 UTC 04:00까지는 핑을 보내지 않습니다.
+    # (KST = UTC + 9)
+    # KST 06:00 (UTC 21:00) / KST 06:05 (UTC 21:05) ...
+    # ... KST 00:55 (UTC 15:55)
+    # KST 01:00 (UTC 16:00)부터 다음 실행 시각인 KST 06:00 (UTC 21:00)까지는 휴면
+    - cron: '*/5 23-14 * * *'
+    
+jobs:
+  ping_service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send HTTP Request to Keep Service Alive
+        # curl 명령어를 사용하여 Render 서비스 URL에 요청을 보냅니다.
+        # -s: Silent 모드 (진행률 표시 안함)
+        # -o /dev/null: 응답 내용을 버림
+        run: |
+          # ⚠️ 여기에 실제 Render 서비스 URL을 입력하세요.
+          RENDER_SERVICE_URL="https://com-on.onrender.com"
+          echo "Pinging ${RENDER_SERVICE_URL}..."
+          curl -s -o /dev/null "${RENDER_SERVICE_URL}"
+          echo "Ping successful at $(date +%H:%M:%S) KST."
