@@ -20,10 +20,13 @@ rag/retriever.py
 """
 
 import json
+import logging
 import os
 import numpy as np
 from openai import OpenAI
 from rag.embedder import get_embedding, get_openai_client
+
+log = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------
 # 경로 상수
@@ -175,8 +178,12 @@ class ProductRetriever:
         best_similarity = float(similarities[best_idx])
         best_key        = self._keys[best_idx]
 
-        # Step 4. 임계값 판단
+        # Step 4. 임계값 판단 (히트/미스 모두 유사도 로깅)
         if best_similarity < threshold:
+            log.info(
+                f"[RAG] 캐시 미스 | 최고유사도: {best_similarity:.3f} (threshold: {threshold}) "
+                f"| 최근접키: {best_key[:30]}..."
+            )
             return None  # 유사한 항목 없음 → GPT fallback
 
         products_data = self._products.get(best_key)

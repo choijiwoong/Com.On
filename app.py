@@ -32,7 +32,8 @@ if os.path.exists(".env"):
 api_key = os.getenv("OPENAI_API_KEY")
 naver_api_client_id = os.getenv("NAVER_API_CLIENT_ID")
 naver_api_client_secret = os.getenv("NAVER_API_CLIENT_SECRET")
-slack_api_key=os.getenv("SLACK_API_TOKEN")
+slack_api_key = os.getenv("SLACK_API_TOKEN")
+rag_threshold = float(os.getenv("RAG_THRESHOLD", "0.5"))  # RAG 유사도 임계값 (기본 0.5)
 
 if not api_key:
     raise EnvironmentError("❌ OPENAI_API_KEY가 설정되지 않았습니다!")
@@ -117,7 +118,7 @@ def api_products():
     # RAG 유사도 검색: 의미상 가장 유사한 기존 질의를 찾습니다.
     # - 유사도 ≥ threshold → 캐시된 제품 데이터 반환 (GPT 호출 없음)
     # - 유사도 < threshold → [] 반환 → 프론트엔드에서 GPT fallback 호출
-    match = retriever.find_best_match(query)
+    match = retriever.find_best_match(query, threshold=rag_threshold)
 
     if match:
         matched_key, similarity, products_data = match
