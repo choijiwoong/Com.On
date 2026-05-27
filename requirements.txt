@@ -5,3 +5,4 @@ beautifulsoup4
 openai
 python-dotenv
 pytest
+numpy          # Phase 3 retriever에서 코사인 유사도 계산에 사용

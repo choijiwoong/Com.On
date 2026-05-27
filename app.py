@@ -11,6 +11,7 @@ import uuid
 from openai import OpenAI
 from dotenv import load_dotenv
 import requests
+from rag.retriever import ProductRetriever
 
 # =======================
 # 🚀 앱 초기화 및 설정
@@ -31,12 +32,19 @@ if os.path.exists(".env"):
 api_key = os.getenv("OPENAI_API_KEY")
 naver_api_client_id = os.getenv("NAVER_API_CLIENT_ID")
 naver_api_client_secret = os.getenv("NAVER_API_CLIENT_SECRET")
-slack_api_key=os.getenv("SLACK_API_TOKEN")
+slack_api_key = os.getenv("SLACK_API_TOKEN")
+rag_threshold = float(os.getenv("RAG_THRESHOLD", "0.5"))  # RAG 유사도 임계값 (기본 0.5)
 
 if not api_key:
     raise EnvironmentError("❌ OPENAI_API_KEY가 설정되지 않았습니다!")
 client = OpenAI(api_key=api_key)
 
+# =======================
+# 🔍 RAG 검색 엔진 초기화
+# =======================
+# 앱 시작 시 1회만 embeddings.json을 메모리에 로드합니다.
+# 이후 요청마다 재사용하여 파일 I/O 없이 빠르게 유사도 검색합니다.
+retriever = ProductRetriever()
 # =======================
 # 🏠 루트 페이지 (index)
 # =======================
@@ -92,14 +100,30 @@ def receive_ping():
     return ''
 
 # =======================
-# 🛍️ 상품 추천 API
+# 🛍️ 상품 추천 API (RAG 유사도 검색)
 # =======================
 @app.route("/api/products")
 def api_products():
     query = request.args.get("query", "")
-    with open(os.path.join(app.static_folder, "data-json/products.json"), encoding="utf-8") as f:
-        data = json.load(f)
-    return jsonify(data.get(query, []))
+
+    if not query:
+        return jsonify([])
+
+    # RAG 유사도 검색: 의미상 가장 유사한 기존 질의를 찾습니다.
+    # - 유사도 ≥ threshold → 캐시된 제품 데이터 반환 (GPT 호출 없음)
+    # - 유사도 < threshold → [] 반환 → 프론트엔드에서 GPT fallback 호출
+    match = retriever.find_best_match(query, threshold=rag_threshold)
+
+    if match:
+        matched_key, similarity, products_data = match
+        app.logger.info(
+            f"[RAG] 캐시 히트 | 유사도: {similarity:.3f} "
+            f"| 매칭키: {matched_key[:30]}..."
+        )
+        return jsonify(products_data)
+
+    app.logger.info(f"[RAG] 캐시 미스 | query: {query[:30]}")
+    return jsonify([])
 
 # =======================
 # 🖱️ 클릭 로깅
