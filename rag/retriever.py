@@ -55,6 +55,7 @@ def _cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
         float: 유사도 값 (-1.0 ~ 1.0)
                임베딩 벡터는 항상 양수 방향이므로 실제론 0.0 ~ 1.0
     """
+    # 추가적인 서칭이 필요하지만, 두 점 사이 거리를 구하는 데에 사용하는 함수로 원점에서 벡터까지의 직선거리 계산.
     norm_a = np.linalg.norm(a)
     norm_b = np.linalg.norm(b)
 
