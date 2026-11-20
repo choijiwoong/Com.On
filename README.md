@@ -68,6 +68,9 @@ Com.On은 사용자의 자연어 질의를 기반으로 감성적이며 직관�
 OPENAI_API_KEY=your_openai_api_key
 NAVER_API_CLIENT_ID=your_client_id
 NAVER_API_CLIENT_SECRET=your_client_secret
+SLACK_API_TOKEN=your_slack_webhook_url   # 슬랙 웹훅 URL (선택)
+RAG_THRESHOLD=0.5                        # RAG 유사도 임계값 (선택, 기본 0.5)
+SHOPPING_PROVIDER=naver                  # naver | link (선택, 기본 naver)
 ```
 
 2. 필요한 패키지 설치
@@ -84,6 +87,35 @@ python app.py
 ```
 http://localhost:5000
 ```
+
+### 🐳 Docker로 실행
+
+```bash
+# 이미지 빌드
+docker build -t com-on .
+
+# 실행 (.env의 환경변수를 컨테이너에 주입)
+docker run --rm -p 5000:5000 --env-file .env com-on
+```
+
+접속: http://localhost:5000
+
+- `.env`는 이미지에 포함되지 않도록 `.dockerignore`로 제외되어 있으며, 실행 시 `--env-file`로만 전달합니다.
+- 코드를 수정한 뒤에는 `docker build`를 다시 실행해야 반영됩니다.
+
+**개발 모드 (코드 수정이 즉시 반영, 디버그 + 자동 리로드)**
+
+```bash
+# bash / Git Bash
+docker run --rm -p 5000:5000 --env-file .env -e FLASK_DEBUG=1 -v "$(pwd)":/app com-on
+```
+```powershell
+# PowerShell
+docker run --rm -p 5000:5000 --env-file .env -e FLASK_DEBUG=1 -v "${PWD}:/app" com-on
+```
+
+- 현재 폴더를 컨테이너의 `/app`에 마운트하므로 `app.py`, `static/`, `templates/` 수정 시 재빌드 없이 반영됩니다. (패키지를 추가했다면 `docker build`를 다시 실행)
+- Docker 없이 로컬에서 띄울 때는 `flask --app app run --debug` 를 사용합니다.
 
 ---
 
