@@ -39,13 +39,25 @@ def test_cookie_manage_existing_user(client):
     assert response.status_code == 200
 
 def test_slack_api(client):
-    # given
-    # when
-    response1 = requests.get(slack_api_key)
-    response2 = requests.post(slack_api_key, json={"text": "slack api test"})# wrong request
-    # then
-    assert response1.status_code == 400 # 서버에서 응답이 오긴 하는지
-    assert response2.status_code == 200 # 테스트 메시지 발송여부 확인
+    # 실제 운영 채널로 메시지를 보내지 않도록 requests.post를 mock 처리
+    from unittest.mock import patch, MagicMock
+    with patch("app.requests.post", return_value=MagicMock(status_code=200)) as mock_post:
+        response = client.get("/search?query=TESTING")
+    assert response.status_code == 200
+    assert mock_post.called
+
+def test_slack_failure_does_not_break_search(client):
+    from unittest.mock import patch
+    with patch("app.requests.post", side_effect=requests.ConnectionError()):
+        response = client.get("/search?query=TESTING")
+    assert response.status_code == 200
+
+def test_products_exact_match_without_openai(client):
+    import json
+    q = json.load(open("static/data-json/questions.json", encoding="utf-8"))[0]["text"]
+    response = client.get("/api/products", query_string={"query": q})
+    assert response.status_code == 200
+    assert response.json["products"]
 
 # 1. 메인 페이지('/')가 정상적으로 로드되는지 테스트
 def test_index_page(client):
@@ -115,3 +127,38 @@ def test_get_price(client):
 # 12. get intro message
 # 13. get product card
 
+
+
+# 14. naver lprice 처리 (명세: 최저가 정보 없으면 0)
+def test_fetch_price_and_link_lprice_zero():
+    from unittest.mock import patch
+    import app as app_module
+    with patch.object(app_module.shopping_provider, "_first_item", return_value={"lprice": "0", "link": "http://x"}):
+        assert app_module.fetch_price_and_link("q") == ("정보 없음", "http://x")
+
+def test_fetch_price_and_link_normal():
+    from unittest.mock import patch
+    import app as app_module
+    with patch.object(app_module.shopping_provider, "_first_item", return_value={"lprice": "12900", "link": "http://x"}):
+        assert app_module.fetch_price_and_link("q") == ("12,900원", "http://x")
+
+def test_fetch_price_and_link_api_failure():
+    from unittest.mock import patch
+    import app as app_module
+    with patch.object(app_module.shopping_provider, "_first_item", return_value=None):
+        assert app_module.fetch_price_and_link("q") == ("정보 없음", "")
+
+
+def test_search_link_provider(monkeypatch):
+    from shopping import SearchLinkProvider
+    p = SearchLinkProvider()
+    price, link = p.price_and_link("무선 이어폰")
+    assert price == "정보 없음" and link.startswith("https://search.shopping.naver.com/")
+    assert p.image("x") == ""
+
+def test_get_provider_switch(monkeypatch):
+    from shopping import get_provider, SearchLinkProvider, NaverShoppingProvider
+    monkeypatch.setenv("SHOPPING_PROVIDER", "link")
+    assert isinstance(get_provider(), SearchLinkProvider)
+    monkeypatch.setenv("SHOPPING_PROVIDER", "naver")
+    assert isinstance(get_provider(), NaverShoppingProvider)

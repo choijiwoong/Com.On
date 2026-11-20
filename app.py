@@ -8,10 +8,11 @@ import os
 from googlesearch import search
 from datetime import datetime
 import uuid
-from openai import OpenAI
+from openai import OpenAI, RateLimitError
 from dotenv import load_dotenv
 import requests
 from rag.retriever import ProductRetriever
+from shopping import get_provider
 
 # =======================
 # 🚀 앱 초기화 및 설정
@@ -71,8 +72,16 @@ def cookie_manage(request, response):
 
 # 슬랙 알림 설정
 def send_slack_alert(message):
-    payload = {"text": message}
-    requests.post(slack_api_key, json=payload)
+    """슬랙 웹훅 알림. 실패해도 본 요청(페이지 응답)에 영향을 주지 않습니다."""
+    if not slack_api_key:
+        app.logger.warning("[SLACK] SLACK_API_TOKEN(웹훅 URL)이 설정되지 않아 알림을 건너뜁니다.")
+        return
+    try:
+        res = requests.post(slack_api_key, json={"text": message}, timeout=5)
+        if res.status_code != 200:
+            app.logger.warning(f"[SLACK] 전송 실패 HTTP {res.status_code}: {res.text[:100]}")
+    except requests.RequestException as e:
+        app.logger.warning(f"[SLACK] 전송 오류: {type(e).__name__}")
 @app.route("/search")
 def result():
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -109,10 +118,20 @@ def api_products():
     if not query:
         return jsonify([])
 
-    # RAG 유사도 검색: 의미상 가장 유사한 기존 질의를 찾습니다.
+    # 1) 정확히 일치하는 저장 질문 → OpenAI 호출 없이 즉시 반환 (샘플 질문, 크레딧 소진 시에도 동작)
+    exact = retriever.find_exact(query)
+    if exact:
+        app.logger.info(f"[RAG] 정확 일치 히트 | query: {query[:30]}")
+        return jsonify(exact)
+
+    # 2) RAG 유사도 검색: 의미상 가장 유사한 기존 질의를 찾습니다.
     # - 유사도 ≥ threshold → 캐시된 제품 데이터 반환 (GPT 호출 없음)
-    # - 유사도 < threshold → [] 반환 → 프론트엔드에서 GPT fallback 호출
-    match = retriever.find_best_match(query, threshold=rag_threshold)
+    # - 유사도 < threshold 또는 임베딩 호출 실패 → [] 반환 → 프론트엔드에서 GPT fallback
+    try:
+        match = retriever.find_best_match(query, threshold=rag_threshold)
+    except Exception as e:
+        app.logger.error(f"[RAG] 유사도 검색 실패(OpenAI 오류 등) | {type(e).__name__}: {str(e)[:150]}")
+        return jsonify([])
 
     if match:
         matched_key, similarity, products_data = match
@@ -264,6 +283,15 @@ def chat():
         logging.info(f'[LOG] 채팅 사용자: {user_id} | 입력: "{message}" → 응답: "{response_data["response"]}"')
         return jsonify(response_data)
 
+    except RateLimitError as e:
+        app.logger.error(f"[OPENAI] 한도/크레딧 초과(chat): {str(e)[:150]}")
+        return jsonify({
+            "should_search": False,
+            "response": "현재 요청이 많아 잠시 후 다시 시도해주세요.",
+            "is_final": False,
+            "final_keywords": "",
+            "conversation_summary": "대화 요약을 생성할 수 없습니다."
+        })
     except Exception as e:
         app.logger.error(f"GPT 응답 처리 중 오류: {str(e)}")
         return jsonify({
@@ -358,12 +386,17 @@ def get_intro():
                             {"role": "system", "content": "You are a friendly and professional product recommender."},
                             {"role": "user", "content": system_content}
                         ],
-                        temperature=0.1
+                        temperature=0.1,
+                        max_tokens=600,
+                        timeout=30
                     )
         # GPT 응답에서 텍스트 추출
         generated_text = completion.choices[0].message.content
         return jsonify(generated_text), 200
 
+    except RateLimitError as e:
+        app.logger.error(f"[OPENAI] 한도/크레딧 초과(인트로): {str(e)[:150]}")
+        return jsonify({'error': '현재 AI 추천 요청이 많아 잠시 후 다시 시도해주세요.'}), 503
     except Exception as e:
         app.logger.error(f"[LOG] 인트로 불러오기 실패: {str(e)}")
         return jsonify({'error': '인트로 불러오기 실패'}), 500
@@ -424,11 +457,11 @@ def get_product_card():
               </div>
               <p class="highlight">{{p.highlight}}</p>
               <a class="buy-button"
-            	   href="https://www.coupang.com/np/search?q={{p.name}}&channel=recent"
+            	   href="https://search.shopping.naver.com/search/all?query={{p.name}}"
             	   data-product="{{p.name}}"
                        target="_blank"
                        rel="noopener noreferrer">
-            	   🔗 지금 구매하기
+            	   🔗 최저가 확인하기
             	</a>
             </div>
             ---
@@ -445,7 +478,7 @@ def get_product_card():
             - 여기서 브랜드는 단순한 "브랜드1"가 아닌 해당 제품을 실제 제작한 회사의 이름을 의미함.
             - 최종적으로 제품명은 "맥북 프로 M2 14인치", "리엔장 UV쉴드 에어핏 리페어 선크림 SPF50+ PA++++ / 혼합자차 진정선크림, 40ml, 1개" 등을 의미함.
             - 만약 명확한 브랜드와 제품명을 찾을 수 없다면 유사한 브랜드와 제품명으로 정리.
-            - 제품 추천 시, 반드시 "현재 판매 중"인 상품만 추천할 것 (쿠팡, 네이버쇼핑, 11번가 등 기준)
+            - 제품 추천 시, 반드시 "현재 판매 중"인 상품만 추천할 것 (국내 주요 쇼핑몰 기준)
             - 제품이 단종이거나 조건에 맞는 제품이 없다면 "조건에 부합하는 제품이 현재 없습니다"라고 출력
             - 최종 제품명은 GPT가 사용자입력조건을 참고하여 최대한 정확도 높게 최종 결정.
             - 이모지나 특수문자 없이 출력
@@ -519,12 +552,17 @@ def get_product_card():
                             {"role": "system", "content": "You are a friendly and professional product recommender."},
                             {"role": "user", "content": system_content}
                         ],
-                        temperature=0.1
+                        temperature=0.1,
+                        max_tokens=2500,
+                        timeout=60
                     )
         # GPT 응답에서 텍스트 추출
         generated_text = completion.choices[0].message.content
         return jsonify(generated_text), 200
 
+    except RateLimitError as e:
+        app.logger.error(f"[OPENAI] 한도/크레딧 초과(제품카드): {str(e)[:150]}")
+        return jsonify({'error': '현재 AI 추천 요청이 많아 잠시 후 다시 시도해주세요.'}), 503
     except Exception as e:
         app.logger.error(f"[LOG] 제품카드 불러오기 실패: {str(e)}")
         return jsonify({'error': '제품카드 불러오기 실패'}), 500
@@ -545,58 +583,24 @@ def get_naver_img():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# ========================
+# inner functions
+# ========================
+# (app.run()보다 위에 정의되어야 `python app.py` 실행 시에도 NameError가 나지 않습니다)
+
+# 가격/링크/이미지 조회는 shopping.providers 의 공급자로 분리되어 있습니다.
+# SHOPPING_PROVIDER 환경변수로 교체할 수 있습니다. (기본: naver)
+shopping_provider = get_provider()
+
+def fetch_naver_img(query):
+    return shopping_provider.image(query)
+
+def fetch_price_and_link(query):
+    return shopping_provider.price_and_link(query)
+
 # =======================
 # 🚪 앱 실행
 # =======================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
-# ========================
-# inner funcitons
-# ========================
-
-# 아래는 완성된 네이버 이미지 API 함수입니다.
-def fetch_naver_img(query):
-    headers = {
-        "X-Naver-Client-Id": naver_api_client_id,
-        "X-Naver-Client-Secret": naver_api_client_secret
-    }
-    params = {
-        "query": query,
-        "display": 1,
-        "sort": "sim"
-    }
-
-    res = requests.get("https://openapi.naver.com/v1/search/shop.json", headers=headers, params=params)
-
-    if res.status_code == 200:
-        data = res.json()
-        if data["items"]:
-            # 검색 결과의 첫 번째 아이템에서 'image' 필드를 가져옴
-            item = data["items"][0]
-            return item["image"]
-
-    # 이미지를 찾을 수 없는 경우 빈 문자열 반환
-    return ""
-
-# 💰 네이버 쇼핑 API - 가격 크롤링
-def fetch_price_and_link(query):
-    headers = {
-        "X-Naver-Client-Id": naver_api_client_id,
-        "X-Naver-Client-Secret": naver_api_client_secret
-    }
-    params = {
-        "query": query,
-        "display": 1,
-        "sort": "sim"
-    }
-
-    res = requests.get("https://openapi.naver.com/v1/search/shop.json", headers=headers, params=params)
-
-    if res.status_code == 200:
-        data = res.json()
-        if data["items"]:
-            item = data["items"][0]
-            return f"{int(item['lprice']):,}원", item["link"]
-    return "정보 없음", ""

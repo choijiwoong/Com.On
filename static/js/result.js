@@ -259,7 +259,7 @@ const renderProduct = (p) => {
          target="_blank"
          data-product="${p.name}"
          data-link="${p.link}">
-         🔗 지금 구매하기
+         🔗 최저가 확인하기
       </a>
     </div>
   `;
@@ -297,7 +297,7 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// ✅ [하단 고지 문구 삽입 - 쿠팡 파트너스 안내]
+// ✅ [하단 안내 문구 삽입]
 function insertFooter() {
   const footer = document.createElement("footer");
   footer.style.marginTop = "60px";
@@ -305,7 +305,7 @@ function insertFooter() {
   footer.style.textAlign = "center";
   footer.style.fontSize = "0.9rem";
   footer.style.color = "#888";
-  footer.innerText = '"위 결과는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다."';
+  footer.innerText = "가격과 재고는 판매처 사정에 따라 달라질 수 있으니, 구매 전 판매 페이지에서 꼭 확인해 주세요.";
   document.body.appendChild(footer);
 }
 

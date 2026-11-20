@@ -123,6 +123,23 @@ class ProductRetriever:
             self._client = get_openai_client()
         return self._client
 
+    def find_exact(self, query: str) -> dict | None:
+        """
+        저장된 질의와 (공백 정규화 후) 정확히 일치하면 제품 데이터를 반환합니다.
+        임베딩/OpenAI 호출이 필요 없으므로 크레딧 소진·장애 시에도 동작합니다.
+        """
+        if not query:
+            return None
+        normalized = " ".join(query.split())
+        data = self._products.get(query)
+        if data is None:
+            data = self._products.get(normalized)
+        if data is None:
+            for key, value in self._products.items():
+                if " ".join(key.split()) == normalized:
+                    return value
+        return data
+
     # ── 핵심 검색 메서드 ──────────────────────────────────────
 
     def find_best_match(
